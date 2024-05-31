@@ -1,0 +1,33 @@
+{
+  "name": "@maioradv/nestjs-core",
+  "version": "1.0.0",
+  "description": "NestJS helpers by MaiorADV",
+  "repository": "https://github.com/maioradv/nestjs-core.git",
+  "author": "Maior ADV Srl",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public",
+    "prepublish:next": "npm run build",
+    "publish:next": "npm publish --access public --tag next"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.8",
+    "@nestjs/graphql": "^12.1.1",
+    "@nestjs/swagger": "^7.3.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "express": "^4.19.2",
+    "nest-winston": "^1.10.0",
+    "ts-node": "^10.9.2",
+    "winston": "^3.13.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.13",
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {}
+}
