@@ -1,6 +1,6 @@
 {
-  "name": "nestjs-core",
-  "version": "1.0.0",
+  "name": "@maioradv/nestjs-core",
+  "version": "1.0.1",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
