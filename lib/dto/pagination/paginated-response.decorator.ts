@@ -2,7 +2,7 @@ import { HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import { ApiExtraModels, ApiOkResponse, ApiResponseOptions, getSchemaPath } from "@nestjs/swagger";
 import PaginatedMetaDto from "./paginated-meta.dto";
 import PaginatedDto from "./paginated.dto";
-import { RelationDefs, handleRelationsForSwagger } from "@/decorators";
+import { RelationDefs, handleRelationsForSwagger } from "../../decorators";
 
 const ApiPaginatedResponse = <TModel extends Type<any>>(
   model: TModel,

@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { Sorting } from '@/dto/sorting';
+import { Sorting } from './enums';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SortingDto implements DefaultSortingI {
