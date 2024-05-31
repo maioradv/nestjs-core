@@ -1,4 +1,8 @@
 ```
-yarn build
-npm publish --access public
+# build
+$ yarn build
+
+# publish
+$ npm publish --access public
+
 ```
