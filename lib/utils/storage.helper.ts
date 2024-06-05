@@ -2,9 +2,10 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import { join, dirname } from 'path';
 import { EOL } from 'os';
+import { joinFromRoot } from './path.helper';
 
 export default class StorageHelper {
-  public rootPath = join(__dirname,'..','../../public')
+  public rootPath = joinFromRoot('public')
 
   public async read(path:string): Promise<string | Buffer> {
     const realPath = join(this.rootPath,path)
