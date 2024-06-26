@@ -23,12 +23,6 @@ export class SortingDto implements DefaultSortingI {
       return {[entry[0]]: entry[1]};
     });
   }
-
-  get orderByRDB() {
-    return Object.entries(this).map(entry => {
-      return {column:entry[0], order:entry[1]};
-    });
-  }
 }
 
 export interface DefaultSortingI {
