@@ -1,7 +1,7 @@
 import { DefaultClausesI, IsDateStringClause, IsNumberClause } from "../dto/clauses";
 import { PaginatedQueryDto } from "../dto/pagination";
 
-export default abstract class PaginatedQueryA extends PaginatedQueryDto implements DefaultClausesI {
+export abstract class PaginatedQueryA extends PaginatedQueryDto implements DefaultClausesI {
   @IsNumberClause()
   id?:number[]
 
