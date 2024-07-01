@@ -1,4 +1,4 @@
-export default class Slugger {
+export class Slugger {
   private unique;
   constructor(private readonly word: string) {}
 
