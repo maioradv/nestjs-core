@@ -47,6 +47,7 @@ export class S3Service {
         Bucket: this.sdkConfigs.bucketName,
         Key: `${this.sdkConfigs.folder}/${fileName}`,
         Body: file.buffer,
+        ContentType: file.mimetype
       })
     );
     const size = sizeOf(file.buffer)
