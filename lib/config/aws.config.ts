@@ -8,3 +8,5 @@ export type AWSConfig = {
     baseUrl:string
   }
 }
+
+export const AWSConfigKey = 'aws'
