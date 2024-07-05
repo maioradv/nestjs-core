@@ -1,3 +1,8 @@
+
+/** Transform a time string (s,m,h,d) to milliseconds
+ * @example toMs('1s') => 1 * 1000
+ * @example toMs('1m') => 1 * 60 * 1000
+ */
 export function toMs(str:string): number {
   const matches = str.match(/(\d+)/);
   const number = +matches[0] ?? 0

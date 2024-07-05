@@ -3,10 +3,23 @@ import { ApiExtraModels, ApiResponse, ApiResponseMetadata, getSchemaPath } from 
 import { WithRequired } from "../utils/types.helper";
 import { ReferenceObject, SchemaObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
 
+/** Entity Model as model itself or ['ModelName',Model] */
 export type TModel = Type<any> | [string,Type<any>]
 export type RelationDefs = {
+  /** Array of Relation Entity or ['RelationNameKey',Relation Entity] 
+   * @example ProductAttribute
+  */
   oneToOne?: TModel[],
+  /** Array of Relation Entity or ['RelationNameKey',Relation Entity] 
+   * @example ProductVariant
+   * @example ['variants',ProductVariant]
+  */
   oneToMany?: TModel[],
+  /** Array with Relation Entity and Parent Entity (or Entities) 
+   * @example [CollectionImage,Image] 
+   * @example [['images',CollectionImage],Image]
+   * @example [CollectionImage,[Image,Language]] 
+  */
   manyToMany?: [TModel,TModel|TModel[]][],
 }
 
