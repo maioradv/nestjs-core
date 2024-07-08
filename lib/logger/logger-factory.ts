@@ -37,6 +37,17 @@ export const LoggerFactoryOptions = (appName:string): WinstonModuleOptions => {
           }),
         ),
       }),
+      new transports.Console({
+        level:'debug',
+        format: format.combine(
+          format.timestamp(),
+          format.ms(),
+          utilities.format.nestLike(appName, {
+            colors: true,
+            prettyPrint: true,
+          }),
+        ),
+      }),
     ],
   }
 }
