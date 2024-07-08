@@ -28,16 +28,6 @@ export const LoggerFactoryOptions = (appName:string): WinstonModuleOptions => {
         maxFiles: '30d',
       }),
       new transports.Console({
-        format: format.combine(
-          format.timestamp(),
-          format.ms(),
-          utilities.format.nestLike(appName, {
-            colors: true,
-            prettyPrint: true,
-          }),
-        ),
-      }),
-      new transports.Console({
         level:'debug',
         format: format.combine(
           format.timestamp(),
