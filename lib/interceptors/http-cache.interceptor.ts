@@ -13,6 +13,7 @@ export class HttpCacheInterceptor extends CacheInterceptor {
   protected isRequestCacheable(context: ExecutionContext): boolean {
     if(context.getType<GqlContextType>() === 'graphql') return false
     const req:Request = context.switchToHttp().getRequest()
-    return req.headers[API_CACHE_CONTROL_HEADER] === ApiCacheControl.noCache ? false : true
+    if(req.headers[API_CACHE_CONTROL_HEADER] === ApiCacheControl.noCache) return false
+    return super.isRequestCacheable(context)
   }
 }
