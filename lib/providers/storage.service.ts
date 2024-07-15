@@ -1,10 +1,12 @@
 import { promises as fs, Stats } from 'fs';
 import { join, dirname } from 'path';
 import { EOL } from 'os';
-import { joinFromRoot } from './path.helper';
+import { joinFromRoot } from '../utils/path.helper';
 import internal from 'stream';
+import { Injectable } from '@nestjs/common';
 
-export class StorageHelper {
+@Injectable()
+export class StorageService {
   public rootPath = joinFromRoot('public')
 
   public async read(path:string): Promise<Buffer> {
