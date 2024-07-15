@@ -1,40 +1,49 @@
-import * as fs from 'fs';
-import { promisify } from 'util';
+import { promises as fs, Stats } from 'fs';
 import { join, dirname } from 'path';
 import { EOL } from 'os';
 import { joinFromRoot } from './path.helper';
+import internal from 'stream';
 
 export class StorageHelper {
   public rootPath = joinFromRoot('public')
 
-  public async read(path:string): Promise<string | Buffer> {
+  public async read(path:string): Promise<Buffer> {
     const realPath = join(this.rootPath,path)
-    const readFile = promisify(fs.readFile);
-    return await readFile(realPath, {});
+    return await fs.readFile(realPath, {});
   }
 
-  public async write(path:string,data:string): Promise<void> {
+  public async write(path:string,data:string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView> | internal.Stream): Promise<void> {
     const realPath = join(this.rootPath,path)
-    this.safeDirectory(realPath)
-    const writeFile = promisify(fs.writeFile);
-    return await writeFile(realPath, data, 'utf8');
+    await this.safeDirectory(realPath)
+    return await fs.writeFile(realPath, data, 'utf8');
   }
 
-  public async append(path:string,data:string): Promise<void> {
+  public async append(path:string,data:string | Uint8Array): Promise<void> {
     const realPath = join(this.rootPath,path)
-    this.safeDirectory(realPath)
-    const appendFile = promisify(fs.appendFile);
-    return await appendFile(realPath, data + EOL);
+    await this.safeDirectory(realPath)
+    return await fs.appendFile(realPath, data + EOL);
   }
 
   public async delete(path:string): Promise<void> {
     const realPath = join(this.rootPath,path)
-    const unlink = promisify(fs.unlink);
-    return fs.existsSync(realPath) ? await unlink(realPath) : null;
+    try {
+      return await fs.unlink(realPath)
+    }
+    catch(e){}
   }
 
-  private safeDirectory(path:string) {
+  public async stat(path:string): Promise<Stats> {
+    const realPath = join(this.rootPath,path)
+    return fs.stat(realPath)
+  }
+
+  private async safeDirectory(path:string): Promise<void> {
     const dirPath = dirname(path)
-    if(!fs.existsSync(dirPath)) fs.mkdirSync(dirPath,{recursive:true});
+    try {
+      await fs.stat(dirPath)
+    }
+    catch(e){
+      await fs.mkdir(dirPath,{recursive:true})
+    }
   }
 }
