@@ -8,16 +8,19 @@ export const IsStringClause = (
     isArray?:boolean
   }
 ) => {
-  return applyDecorators(
+  const decorators = [
     ApiPropertyOptional({
       type:String,
       description: options?.isArray ? 'A string or a comma-separated list of strings' : 'Check if field contains the string'
     }),
     IsOptional(),
     IsString(),
-    options?.isArray ? IsArray() : undefined,
-    options?.isArray ? Transform(({value}:{value:string}) => value.split(',')) : undefined
-  );
+  ]
+  if(options?.isArray) {
+    decorators.push(IsArray())
+    decorators.push(Transform(({value}:{value:string}) => value.split(',')))
+  }
+  return applyDecorators(...decorators);
 };
 
 export const IsEnumClause = (
