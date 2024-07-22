@@ -14,7 +14,7 @@ export const IsStringClause = (
       description: options?.isArray ? 'A string or a comma-separated list of strings' : 'Check if field contains the string'
     }),
     IsOptional(),
-    IsString(),
+    IsString({each:options?.isArray ? true : undefined})
   ]
   if(options?.isArray) {
     decorators.push(IsArray())
