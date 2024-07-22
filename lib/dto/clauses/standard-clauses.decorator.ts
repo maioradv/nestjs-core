@@ -4,15 +4,19 @@ import { Transform, Type } from "class-transformer";
 import { IsArray, IsBoolean, IsDate, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
 export const IsStringClause = (
-
+  options?:{
+    isArray?:boolean
+  }
 ) => {
   return applyDecorators(
     ApiPropertyOptional({
       type:String,
-      description:'Check if field contains the string'
+      description: options?.isArray ? 'A string or a comma-separated list of strings' : 'Check if field contains the string'
     }),
     IsOptional(),
-    IsString()
+    IsString(),
+    options?.isArray ? IsArray() : undefined,
+    options?.isArray ? Transform(({value}:{value:string}) => value.split(',')) : undefined
   );
 };
 
