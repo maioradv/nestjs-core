@@ -10,5 +10,5 @@ export type ImagePipeValidatorOptions = {
 
 export const ImagePipeValidator = (options?:ImagePipeValidatorOptions) => new ParseFilePipeBuilder()
 .addFileTypeValidator({ fileType: options?.mimeTypes ? `.(${options.mimeTypes.join('|')})` : DEFAULT_MIMETYPES_SUPPORT })
-.addMaxSizeValidator({ maxSize: ( options?.maxSize ?? DEFAULT_MAX_IMAGE_SIZE ) * 8e6 })
+.addMaxSizeValidator({ maxSize: ( options?.maxSize ?? DEFAULT_MAX_IMAGE_SIZE ) * 1e6 })
 .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY })
