@@ -689,10 +689,10 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@maioradv/accounts-lib@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.0.3.tgz#3a2a3e86f43f798421ceed23bcae12e8e078e76b"
-  integrity sha512-q/KvFT9rYNFCHb/tBaWJCpHKbuhxz0kMOf0RVEDOBNjoUADH7GBq8g8P6zkIHlbTvpSozUD8xHriJeFkavhu4Q==
+"@maioradv/accounts-lib@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.0.5.tgz#268c3ad79f8924573814a56abfbd84d36288fb36"
+  integrity sha512-mfR508VyogQAX7BP5j0WWM3zmuD4SUVYTncovpVZJDnWkcjsh7ITjRSJIS6JgFaDA9uUyydcdjHIkXSH//ILoA==
   dependencies:
     axios "^1.7.2"
 
