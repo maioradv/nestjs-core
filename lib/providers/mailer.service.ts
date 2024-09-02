@@ -3,12 +3,8 @@ import { ConfigService } from "@nestjs/config";
 import { createTransport, SentMessageInfo, Transporter } from "nodemailer";
 import { SmtpConfig } from "../config";
 
-/** From email as email or ['From Name',email] 
-  * @example user@email.com
-  * @example ['User Name','user@email.com']
-*/
 export type MailingAddress = string | [string,string]
-export type ReceiverAddress = MailingAddress[]
+export type ReceiverAddress = string | string[]
 
 @Injectable()
 export class MailerService {
@@ -29,7 +25,15 @@ export class MailerService {
     html,
     text,
   }:{
+    /** From email as email or ['From Name',email] 
+      * @example 'user@email.com'
+      * @example ['User Name','user@email.com']
+    */
     from:MailingAddress,
+    /** From email as email or ['From Name',email] 
+      * @example 'user@email.com'
+      * @example ['user1@email.com','user2@email.com']
+    */
     to:ReceiverAddress,
     subject:string,
     html:string,
@@ -38,7 +42,7 @@ export class MailerService {
     
     return this.client.sendMail({
       from: Array.isArray(from) ? `"${from[0]}" <${from[1]}>` : from,
-      to: to.map(a =>  Array.isArray(a) ? `"${a[0]}" <${a[1]}>` : a).join(', '),
+      to: Array.isArray(to) ? to.join(', ') : to,
       subject,
       text,
       html,
