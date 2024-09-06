@@ -36,9 +36,20 @@ export const ApiResponseWithRels = (
     ApiExtraModels(...extraModels),
     ApiResponse({
       ...rest,
-      schema:{
+      schema: rest.isArray ? {
         title: `${Model.name}`,
-        [rest.isArray ? 'multipleOf': 'allOf']: [
+        type:'array',
+        items:{
+          allOf: [
+            { $ref: getSchemaPath(Model) },
+            {
+              properties:properties
+            }
+          ],
+        }  
+      } : {
+        title: `${Model.name}`,
+        allOf: [
           { $ref: getSchemaPath(Model) },
           {
             properties:properties
