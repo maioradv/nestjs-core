@@ -38,7 +38,7 @@ export const ApiResponseWithRels = (
       ...rest,
       schema:{
         title: `${Model.name}`,
-        allOf: [
+        [rest.isArray ? 'multipleOf': 'allOf']: [
           { $ref: getSchemaPath(Model) },
           {
             properties:properties
