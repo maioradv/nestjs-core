@@ -1,6 +1,6 @@
 import { HttpStatus, ParseFilePipeBuilder } from "@nestjs/common";
 
-export const DEFAULT_MAX_IMAGE_SIZE = 2;
+export const DEFAULT_MAX_IMAGE_SIZE = 10;
 export const DEFAULT_MIMETYPES_SUPPORT = '.(webp|avif|png|gif|jpeg|jpg)'
 
 export type ImagePipeValidatorOptions = {
