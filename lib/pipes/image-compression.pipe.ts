@@ -18,7 +18,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
       return file
 
     } catch (error) {
-      throw new BadRequestException('Error processing the image');
+      throw new BadRequestException(`Error processing the image: ${error?.message}`);
     }
   }
 }
