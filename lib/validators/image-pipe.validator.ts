@@ -1,7 +1,7 @@
 import { HttpStatus, ParseFilePipeBuilder } from "@nestjs/common";
 
 export const DEFAULT_MAX_IMAGE_SIZE = 10;
-export const DEFAULT_MIMETYPES_SUPPORT = '.(?i)(webp|avif|png|gif|jpeg|jpg|heic|heif|hevc)'
+export const DEFAULT_MIMETYPES_SUPPORT = '.(?i)(webp|avif|png|gif|jpeg|jpg|heic|heif|hevc)$'
 
 export type ImagePipeValidatorOptions = {
   maxSize?:number;
@@ -9,6 +9,6 @@ export type ImagePipeValidatorOptions = {
 }
 
 export const ImagePipeValidator = (options?:ImagePipeValidatorOptions) => new ParseFilePipeBuilder()
-.addFileTypeValidator({ fileType: options?.mimeTypes ? `.(?i)(${options.mimeTypes.join('|')})` : DEFAULT_MIMETYPES_SUPPORT })
+.addFileTypeValidator({ fileType: options?.mimeTypes ? `.(?i)(${options.mimeTypes.join('|')})$` : DEFAULT_MIMETYPES_SUPPORT })
 .addMaxSizeValidator({ maxSize: ( options?.maxSize ?? DEFAULT_MAX_IMAGE_SIZE ) * 1e6 })
 .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY })
