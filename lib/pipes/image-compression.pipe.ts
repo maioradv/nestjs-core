@@ -5,7 +5,7 @@ import { LoggerFactory } from '../logger';
 
 @Injectable()
 export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, Promise<Express.Multer.File>> {
-  private readonly logger = LoggerFactory(this.constructor.name);
+  //private readonly logger = LoggerFactory(this.constructor.name);
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
@@ -16,14 +16,14 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
       file.buffer = compressedBuffer
       file.mimetype = 'image/webp'
       file.size = compressedBuffer.length
-      file.originalname = file.originalname.replace(extname(file.originalname), '.webp')
+      file.originalname = file.originalname.replace(extname(file.originalname), '.webp').replaceAll(' ','-')
 
       return file
 
     } catch (error) {
-      const {buffer,stream, ...log} = file
+      /*const {buffer,stream, ...log} = file
       this.logger.error(log)
-      this.logger.error(error)
+      this.logger.error(error)*/
       throw new BadRequestException(`Error processing the image: ${error?.message}`);
     }
   }
