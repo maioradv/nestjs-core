@@ -10,7 +10,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
       const compressedBuffer = await sharp(file.buffer).webp({ 
-        quality: 80,
+        quality: 100,
       }).rotate().toBuffer()
 
       file.buffer = compressedBuffer
