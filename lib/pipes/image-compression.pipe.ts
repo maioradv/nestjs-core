@@ -9,34 +9,17 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
-      /*const compressedBuffer = await sharp(file.buffer).webp({ 
-        quality: 70,
-      }).rotate().toBuffer()*/
-
-      const image = sharp(file.buffer);
-      const metadata = await image.metadata();
-
-      const compressedBuffer = await image
+      const compressedBuffer = await sharp(file.buffer)
       .resize({
-        width: metadata.width > metadata.height ? 1920 : null,
-        height: metadata.height > metadata.width ? 1920 : null,
+        width: 2560,
+        height: 2560,
         fit: 'inside',
+        withoutEnlargement:true
       })
-      .withMetadata() // Mantieni il profilo colore e i metadati dell'immagine originale
-      .webp({ quality: 90 }) // Alta qualità per mantenere la nitidezza
+      .withMetadata()
+      .webp({ quality: 70 }) 
       .rotate()
       .toBuffer();
-
-
-      /*const thumbnailBuffer = await sharp(file.buffer)
-      .resize({
-        width: 128,
-        height: 300,
-        fit: 'cover', // Ritaglia l'immagine per adattarsi a 128x300 mantenendo le proporzioni
-        position: 'center', // Centra l'immagine durante il ritaglio
-      })
-      .webp({ quality: 70 })
-      .toBuffer();*/
 
       file.buffer = compressedBuffer
       file.mimetype = 'image/webp'
