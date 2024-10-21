@@ -9,7 +9,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
-      const compressedBuffer = await sharp(file.buffer)
+      const compressedBuffer = await sharp(file.buffer,{failOn:'error'})
       .resize({
         width: 2560,
         height: 2560,
