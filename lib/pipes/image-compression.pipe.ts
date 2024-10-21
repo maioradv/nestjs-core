@@ -9,13 +9,13 @@ export type CompressionOptions = {
 
 @Injectable()
 export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, Promise<Express.Multer.File>> {
-  constructor(private readonly options?:CompressionOptions){}
+  //constructor(private readonly options?:CompressionOptions){}
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
       const [resolutionCap,quality] = [
-        this.options?.resolutionCap ?? 2560,
-        this.options?.quality ?? 70
+        2560,//this.options?.resolutionCap ?? 2560,
+        70//this.options?.quality ?? 70
       ]
 
       const compressedBuffer = await sharp(file.buffer,{failOn:'error'})
