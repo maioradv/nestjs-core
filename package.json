@@ -1,6 +1,6 @@
 {
   "name": "@maioradv/nestjs-core",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
@@ -28,6 +28,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "handlebars": "^4.7.8",
     "image-size": "^1.1.1",
     "nest-winston": "^1.10.0",
     "nodemailer": "^6.9.14",
@@ -58,6 +59,7 @@
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "handlebars": "^4.7.8",
     "image-size": "^1.1.1",
     "nest-winston": "^1.10.0",
     "nodemailer": "^6.9.14",

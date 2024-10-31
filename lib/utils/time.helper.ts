@@ -5,7 +5,7 @@
  */
 export function toMs(str:string): number {
   const matches = str.match(/(\d+)/);
-  const number = +matches[0] ?? 0
+  const number = +(matches[0] ?? 0)
   const mode = str.replace(matches[0],'')
   const unit = 1000;
   const conversion = {
@@ -14,5 +14,5 @@ export function toMs(str:string): number {
     m: unit * 60,
     s: unit,
   }
-  return conversion[mode] * number ?? 0
+  return (conversion[mode] ?? 0) * number
 }
