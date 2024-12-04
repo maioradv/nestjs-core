@@ -1,6 +1,6 @@
 {
   "name": "@maioradv/nestjs-core",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
@@ -12,6 +12,7 @@
     "/dist"
   ],
   "scripts": {
+    "example": "ts-node example/test.ts",
     "build": "tsc",
     "publish:npm": "npm publish --access public"
   },

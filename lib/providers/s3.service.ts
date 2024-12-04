@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, PutObjectCommand, S3Client, paginateListObjectsV2 } from "@aws-sdk/client-s3";
 import { AWSConfig } from "../config/aws.config";
 import { createHash } from "crypto";
 import sizeOf from 'image-size'
@@ -68,6 +68,53 @@ export class S3Service {
       new DeleteObjectCommand({
         Bucket: this.sdkConfigs.bucketName,
         Key: `${this.sdkConfigs.folder}/${fileName}`,
+      })
+    )
+  }
+
+  public async listFiles(limit?:number) {
+    return this.client.send(
+      new ListObjectsCommand({
+        Bucket: this.sdkConfigs.bucketName,
+        Prefix: this.sdkConfigs.folder,
+        MaxKeys: limit
+      })
+    )
+  }
+
+  public async removeFiles(keys:string[]) {
+    return this.client.send(
+      new DeleteObjectsCommand({
+        Bucket: this.sdkConfigs.bucketName,
+        Delete: {
+          Objects:keys.map(k => ({
+            Key:k
+          }))
+        }
+      })
+    )
+  }
+
+  public async clearAll() {
+    const paginator = paginateListObjectsV2(
+      { client:this.client },
+      {
+        Bucket: this.sdkConfigs.bucketName,
+        Prefix: this.sdkConfigs.folder,
+      },
+    );
+
+    const objectKeys = [];
+    for await (const { Contents } of paginator) {
+      objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
+    }
+    
+    return this.client.send(
+      new DeleteObjectsCommand({
+        Bucket: this.sdkConfigs.bucketName,
+        Delete: {
+          Objects:objectKeys
+        }
       })
     )
   }
