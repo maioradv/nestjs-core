@@ -72,12 +72,12 @@ export class S3Service {
     )
   }
 
-  public async listFiles(limit?:number) {
+  public async listFiles(opts:{limit?:number,folder?:string} = {}) {
     return this.client.send(
       new ListObjectsCommand({
         Bucket: this.sdkConfigs.bucketName,
-        Prefix: this.sdkConfigs.folder,
-        MaxKeys: limit
+        Prefix: opts.folder ?? this.sdkConfigs.folder,
+        MaxKeys: opts.limit
       })
     )
   }
@@ -95,12 +95,12 @@ export class S3Service {
     )
   }
 
-  public async clearAll() {
+  public async clearAll(opts:{folder?:string} = {}) {
     const paginator = paginateListObjectsV2(
       { client:this.client },
       {
         Bucket: this.sdkConfigs.bucketName,
-        Prefix: this.sdkConfigs.folder,
+        Prefix: opts.folder ?? this.sdkConfigs.folder,
       },
     );
 
@@ -108,7 +108,7 @@ export class S3Service {
     for await (const { Contents } of paginator) {
       objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
     }
-    
+
     return this.client.send(
       new DeleteObjectsCommand({
         Bucket: this.sdkConfigs.bucketName,
