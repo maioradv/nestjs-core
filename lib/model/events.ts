@@ -16,5 +16,8 @@ export type Events<
   B extends string,
   H extends Record<string,any>
 > = {
-  readonly [K in keyof H]: new (payload: H[K]) => BaseEvent<B, Extract<K, string>, H[K]>
+  readonly [K in keyof H]: {
+    name: `${B}.${Extract<K, string>}`;
+    class: new (payload: H[K]) => BaseEvent<B, Extract<K, string>, H[K]>;
+  };
 };
