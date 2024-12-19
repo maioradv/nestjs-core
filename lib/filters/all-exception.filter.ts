@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       stack: exception.stack?.split('\n')
     } : {
       statusCode: status,
-      message: 'Internal Server Error',
+      message: exception.message ?? 'Internal Server Error',
     }
     
     response
