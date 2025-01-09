@@ -106,8 +106,10 @@ export class S3Service {
 
     const objectKeys = [];
     for await (const { Contents } of paginator) {
-      objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
+      if(Contents.length > 0) objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
     }
+
+    if(objectKeys.length == 0) return;
 
     return this.client.send(
       new DeleteObjectsCommand({
