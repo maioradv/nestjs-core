@@ -106,7 +106,7 @@ export class S3Service {
 
     const objectKeys = [];
     for await (const { Contents } of paginator) {
-      if(Contents.length > 0) objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
+      if(Contents && Contents.length > 0) objectKeys.push(...Contents.map((obj) => ({ Key: obj.Key })));
     }
 
     if(objectKeys.length == 0) return;
