@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNumber, IsOptional, Max, Min } from "class-validator";
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 import { Int, Field, ArgsType } from '@nestjs/graphql';
+import { Sorting } from "../sorting";
 
 @ArgsType()
 export default class CursorQueryDto {
@@ -40,6 +41,26 @@ export default class CursorQueryDto {
   @Type(() => Number)
   readonly limit?:number = 50;
 
+  @ApiProperty({
+    required:false,
+    default: 'id',
+  })
+  @Field({nullable:true})
+  @IsString()
+  @IsOptional()
+  readonly cursorField?:string = 'id'
+
+  @ApiProperty({
+    required:false,
+    enum:Sorting,
+    default: Sorting.asc,
+  })
+  @Field({nullable:true})
+  @IsString()
+  @IsEnum(Sorting)
+  @IsOptional()
+  readonly cursorOrder?:Sorting = Sorting.asc
+
   get skip(): number {
     if(this.after || this.before) return 1;
     return 0;
@@ -52,13 +73,13 @@ export default class CursorQueryDto {
 
   get order():Record<string,any> {
     return {
-      id: 'asc'
+      [this.cursorField]: this.cursorOrder
     }
   }
 
   get cursor() {
     return this.after || this.before ? {
-      id: this.after ?? this.before
+      [this.cursorField]: this.after ?? this.before
     } : undefined
   }
 }

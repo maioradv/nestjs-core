@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
 import CursorMetaDto from './cursor-meta.dto'
+import CursorQueryDto from './cursor-query.dto';
 
 interface IEdgeType<T> {
   cursor: string;
@@ -47,21 +48,22 @@ export class PaginatedGQLDto<T> implements IPaginatedType<T>{
   readonly nodes: T[];
   readonly meta: CursorMetaDto;
 
-  constructor(data: T[], meta: CursorMeta) {
-    this.edges = this.getEdges(data)
+  constructor(data: T[], meta: CursorMeta, query:CursorQueryDto) {
+    this.edges = this.getEdges(data,query.cursorField)
     this.nodes = data
+    const [firstIndex,lastIndex] = query.cursorOrder == 'asc' ? [0,this.edges.length-1] : [this.edges.length-1,0] 
     this.meta = new CursorMetaDto({
       ...meta,
-      start: +this.edges[0]?.cursor,
-      end: +this.edges[this.edges.length-1]?.cursor
+      start: +this.edges[firstIndex]?.cursor,
+      end: +this.edges[lastIndex]?.cursor
     })
   }
 
-  private getEdges(data: T[]) {
+  private getEdges(data: T[],cursor:string) {
     return data.map((value) => {
       return {
         node: value,
-        cursor: (value as any).id,
+        cursor: (value as any)[cursor],
       };
     });
   }
