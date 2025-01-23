@@ -68,7 +68,7 @@ export default class CursorQueryDto {
     }
   }
 
-  get getCursor() {
+  get cursor() {
     return this.after || this.before ? {
       id: this.after ?? this.before
     } : undefined
