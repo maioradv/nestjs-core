@@ -49,21 +49,22 @@ export class PaginatedGQLDto<T> implements IPaginatedType<T>{
   readonly meta: CursorMetaDto;
 
   constructor(data: T[], meta: CursorMeta, query:CursorQueryDto) {
-    this.edges = this.getEdges(data,query.cursorField)
+    this.edges = this.getEdges(data)
     this.nodes = data
-    const [firstIndex,lastIndex] = query.cursorOrder == 'asc' ? [0,this.edges.length-1] : [this.edges.length-1,0] 
+    const [first,last] = query.sorting == 'asc' ? [meta.first,meta.last] : [meta.last,meta.first] 
     this.meta = new CursorMetaDto({
-      ...meta,
-      start: +this.edges[firstIndex]?.cursor,
-      end: +this.edges[lastIndex]?.cursor
+      first,
+      last, 
+      start: +this.edges[0]?.cursor,
+      end: +this.edges[this.edges.length-1]?.cursor
     })
   }
 
-  private getEdges(data: T[],cursor:string) {
+  private getEdges(data: T[]) {
     return data.map((value) => {
       return {
         node: value,
-        cursor: (value as any)[cursor],
+        cursor: (value as any).id,
       };
     });
   }

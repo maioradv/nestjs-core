@@ -43,15 +43,6 @@ export default class CursorQueryDto {
 
   @ApiProperty({
     required:false,
-    default: 'id',
-  })
-  @Field({nullable:true})
-  @IsString()
-  @IsOptional()
-  readonly cursorField?:string = 'id'
-
-  @ApiProperty({
-    required:false,
     enum:Sorting,
     default: Sorting.asc,
   })
@@ -59,7 +50,7 @@ export default class CursorQueryDto {
   @IsString()
   @IsEnum(Sorting)
   @IsOptional()
-  readonly cursorOrder?:Sorting = Sorting.asc
+  readonly sorting?:Sorting = Sorting.asc
 
   get skip(): number {
     if(this.after || this.before) return 1;
@@ -73,13 +64,13 @@ export default class CursorQueryDto {
 
   get order():Record<string,any> {
     return {
-      [this.cursorField]: this.cursorOrder
+      id: this.sorting
     }
   }
 
-  get cursor() : any {
+  get getCursor() {
     return this.after || this.before ? {
-      [this.cursorField]: this.after ?? this.before
+      id: this.after ?? this.before
     } : undefined
   }
 }
