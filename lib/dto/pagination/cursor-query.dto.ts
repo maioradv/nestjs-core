@@ -77,7 +77,7 @@ export default class CursorQueryDto {
     }
   }
 
-  get cursor() {
+  get cursor() : any {
     return this.after || this.before ? {
       [this.cursorField]: this.after ?? this.before
     } : undefined
