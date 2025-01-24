@@ -3,7 +3,11 @@ export class Slugger {
   constructor(private readonly word: string) {}
 
   public get(): string {
-    return this.word.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/gi, '').replaceAll(' ','-').toLowerCase() + (this.unique ? '-'+this.randomString(5) : '')
+    return this.word.trim()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, '')                 // no accent
+      .replace(/[^a-z0-9\s]/gi, '')                                     // no special except space
+      .replaceAll(' ','-') 
+      .toLowerCase() + (this.unique ? '-'+this.randomString(5) : '')
   }
 
   public makeUnique() {
