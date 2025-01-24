@@ -6,7 +6,10 @@ export function IsSlug(validationOptions?: ValidationOptions) {
       name: 'IsSlug',
       target: object.constructor,
       propertyName: propertyName,
-      options: validationOptions,
+      options: {
+        message:`${propertyName} must be a valid slug`,
+        ...(validationOptions ?? {})
+      },
       validator: {
         validate(value: any, args: ValidationArguments) {
           const regex = /^[a-z0-9-]+$/;
