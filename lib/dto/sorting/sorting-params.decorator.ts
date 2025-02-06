@@ -8,7 +8,7 @@ export const ApiSortingParams = <TModel extends TypeI<any>>(
 ) => {
   return applyDecorators(
     ApiExtraModels(model),
-    ApiQuery({
+    /*ApiQuery({
       required: false,
       name: 'sorting',
       style: 'deepObject',
@@ -18,7 +18,7 @@ export const ApiSortingParams = <TModel extends TypeI<any>>(
       schema: {
         $ref: getSchemaPath(model),
       },
-    })
+    })*/
   );
 };
 
