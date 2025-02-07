@@ -8,17 +8,16 @@ export const ApiSortingParams = <TModel extends TypeI<any>>(
 ) => {
   return applyDecorators(
     ApiExtraModels(model),
-    /*ApiQuery({
+    ApiQuery({
       required: false,
       name: 'sorting',
-      style: 'deepObject',
-      explode: true,
-      type: 'object',
+      style: 'simple', // deepObject
+      //explode: true,
+      description:`A json of ${model.name}`,
+      type: 'string', //object
       example:'',
-      schema: {
-        $ref: getSchemaPath(model),
-      },
-    })*/
+      //schema: { $ref: getSchemaPath(model) },
+    })
   );
 };
 
@@ -26,7 +25,7 @@ export const IsSortingObject = <TModel extends TypeI<any>>(
   model: TModel,
 ) => {
   return applyDecorators(
-    ApiPropertyOptional({type:model}),
+    ApiPropertyOptional(),
     ValidateNested(),
     Transform(({value}) => plainToClass(model, JSON.parse(value))),
     Type(() => model),
