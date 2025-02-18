@@ -18,14 +18,14 @@ export const LoggerFactoryOptions = (appName:string): WinstonModuleOptions => {
         format: format.combine(format.timestamp({format:'YYYY-MM-DDTHH:mm:ssZZ'}), format.ms(), format.json()),
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
-        maxFiles: '30d',
+        maxFiles: 30,
       }),
       new DailyRotateFile({
         filename: joinFromRoot(relativePath,`%DATE%-combined.log`),
         format: format.combine(format.timestamp({format:'YYYY-MM-DDTHH:mm:ssZZ'}), format.ms(), format.json()),
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
-        maxFiles: '30d',
+        maxFiles: 30,
       }),
       new transports.Console({
         level:'debug',
