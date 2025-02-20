@@ -40,6 +40,11 @@ export class StorageService {
     return fs.stat(realPath)
   }
 
+  public async createDir(relativePath:string): Promise<void> {
+    const realPath = this.realPath(relativePath)
+    await this.safeDirectory(realPath)
+  }
+
   private realPath(relativePath:string): string {
     return this.useRealPath ? relativePath : join(this.rootPath,relativePath)
   }
