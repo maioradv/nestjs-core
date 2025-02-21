@@ -42,7 +42,12 @@ export class StorageService {
 
   public async createDir(relativePath:string): Promise<void> {
     const realPath = this.realPath(relativePath)
-    await this.safeDirectory(realPath)
+    try {
+      await fs.stat(realPath)
+    }
+    catch(e){
+      await fs.mkdir(realPath,{recursive:true})
+    }
   }
 
   private realPath(relativePath:string): string {
