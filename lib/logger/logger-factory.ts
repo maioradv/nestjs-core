@@ -9,7 +9,7 @@ export const LoggerFactory = (appName: string): LoggerService => {
 }
 
 export const LoggerFactoryOptions = (appName:string): WinstonModuleOptions => {
-  const relativePath = `../logs/${process.env.LOGS_PATH ?? 'default'}/${appName}`
+  const relativePath = `../logs/${process.env.LOGS_FOLDER ?? 'default'}/${appName}`
   return {
     transports: [
       new DailyRotateFile({
