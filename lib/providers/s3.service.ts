@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, PutObjectCommand, S3Client, paginateListObjectsV2 } from "@aws-sdk/client-s3";
 import { AWSConfig } from "../config/aws.config";
 import { createHash } from "crypto";
-import sizeOf from 'image-size'
+import { imageSize as sizeOf } from 'image-size'
 
 export type UploadImageResponse = {
   src:string;
