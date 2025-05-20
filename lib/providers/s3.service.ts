@@ -4,6 +4,7 @@ import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, PutObjec
 import { AWSConfig } from "../config/aws.config";
 import { createHash } from "crypto";
 import { imageSize as sizeOf } from 'image-size'
+import { LoggerFactory } from "../logger";
 
 export type UploadImageResponse = {
   src:string;
@@ -19,6 +20,7 @@ export type UploadImageResponse = {
 export class S3Service {
   public readonly client:S3Client;
   private sdkConfigs:AWSConfig['s3sdk'];
+  private readonly logger = LoggerFactory(this.constructor.name);
 
   constructor(private readonly config:ConfigService){
     this.sdkConfigs = this.config.get<AWSConfig['s3sdk']>('aws.s3sdk')
@@ -32,34 +34,42 @@ export class S3Service {
   }
 
   public async uploadImage(file: Express.Multer.File): Promise<UploadImageResponse> {
-    let fileName = `${this.randomString(6)}-${file.originalname}`
-    /*try {
-      const check = await this.client.send(
-        new HeadObjectCommand({
-          Bucket: this.sdkConfigs.bucketName, 
+    try {
+      let fileName = `${this.randomString(6)}-${file.originalname}`
+      this.logger.log('randome',fileName)
+      /*try {
+        const check = await this.client.send(
+          new HeadObjectCommand({
+            Bucket: this.sdkConfigs.bucketName, 
+            Key: `${this.sdkConfigs.folder}/${fileName}`,
+          })
+        )
+        if(check) fileName = `${this.randomString(5)}-${fileName}`
+      } catch(e) {}*/
+      const response = await this.client.send(
+        new PutObjectCommand({
+          Bucket: this.sdkConfigs.bucketName,
           Key: `${this.sdkConfigs.folder}/${fileName}`,
+          Body: file.buffer,
+          ContentType: file.mimetype
         })
-      )
-      if(check) fileName = `${this.randomString(5)}-${fileName}`
-    } catch(e) {}*/
-    const response = await this.client.send(
-      new PutObjectCommand({
-        Bucket: this.sdkConfigs.bucketName,
-        Key: `${this.sdkConfigs.folder}/${fileName}`,
-        Body: file.buffer,
-        ContentType: file.mimetype
-      })
-    );
-    const size = sizeOf(file.buffer)
-    const checksum = createHash('md5').update(file.buffer).digest("base64");
-    return {
-      src:`${this.sdkConfigs.baseUrl}/${this.sdkConfigs.folder}/${fileName}`,
-      width: size.width,
-      height: size.height,
-      checksum: checksum,
-      fileName: fileName,
-      mimeType: file.mimetype,
-      size: file.size
+      );
+      this.logger.log('response',response)
+      const size = sizeOf(file.buffer)
+      this.logger.log('sizeof',size)
+      const checksum = createHash('md5').update(file.buffer).digest("base64");
+      return {
+        src:`${this.sdkConfigs.baseUrl}/${this.sdkConfigs.folder}/${fileName}`,
+        width: size.width,
+        height: size.height,
+        checksum: checksum,
+        fileName: fileName,
+        mimeType: file.mimetype,
+        size: file.size
+      }
+    } catch(e) {
+      this.logger.error(e)
+      throw e
     }
   }
 
