@@ -36,7 +36,6 @@ export class S3Service {
   public async uploadImage(file: Express.Multer.File): Promise<UploadImageResponse> {
     try {
       let fileName = `${this.randomString(6)}-${file.originalname}`
-      this.logger.log('randome',fileName)
       /*try {
         const check = await this.client.send(
           new HeadObjectCommand({
@@ -54,9 +53,7 @@ export class S3Service {
           ContentType: file.mimetype
         })
       );
-      this.logger.log('response',response)
       const size = sizeOf(file.buffer)
-      this.logger.log('sizeof',size)
       const checksum = createHash('md5').update(file.buffer).digest("base64");
       return {
         src:`${this.sdkConfigs.baseUrl}/${this.sdkConfigs.folder}/${fileName}`,
