@@ -13,9 +13,13 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
+      const meta = await sharp(file.buffer).metadata();
+
+      const defaultQuality = this.defaultQuality(meta.width, meta.height);
+      
       const [resolutionCap,quality] = [
         this.options.resolutionCap ?? 2560,
-        this.options.quality ?? 70
+        this.options.quality ?? defaultQuality
       ]
 
       const compressedBuffer = await sharp(file.buffer,{failOn:'error'})
@@ -40,5 +44,11 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
     } catch (error) {
       throw new BadRequestException(`Error processing the image: ${error?.message}`);
     }
+  }
+
+  private defaultQuality(width?:number, height?:number): number {
+    if(!width || !height) return 70;
+    const area = width * height;
+    return area > 2e6 ? 50 : area > 1e6 ? 60 : 70;
   }
 }
