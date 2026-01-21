@@ -13,7 +13,14 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
 
   async transform(file: Express.Multer.File, metadata: ArgumentMetadata) {
     try {
-      const meta = await sharp(file.buffer).metadata();
+      const picture = sharp(file.buffer,{failOn:'error'});
+      const meta = await picture.metadata()
+
+      const stats = await picture.stats()
+      const dev = stats.channels.map(c => c.stdev);
+      const avg = dev.reduce((a,b)=>a+b)/dev.length;
+      const max = Math.max(...dev);
+      const isFlat = avg < 20 && max < 30;
 
       const defaultQuality = this.defaultQuality(meta.width, meta.height);
       
@@ -22,7 +29,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
         this.options.quality ?? defaultQuality
       ]
 
-      const compressedBuffer = await sharp(file.buffer,{failOn:'error'})
+      const compressedBuffer = await picture
       .resize({
         width: resolutionCap,
         height: resolutionCap,
@@ -30,7 +37,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
         withoutEnlargement:true
       })
       .withMetadata()
-      .webp({ quality: quality }) 
+      .webp(isFlat ? { lossless: true} : { quality: quality }) 
       .rotate()
       .toBuffer();
 
