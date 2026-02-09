@@ -21,8 +21,11 @@ export type ResourceGuardOptions = {
 
   /** Optional NestJS LoggerService to use for logging. */
   logger?: LoggerService;
+
+  /** If true, logs each check with CPU/memory usage. Default: false */
+  debug?: boolean;
   
-  /** Optional peak logging options: log when CPU/memory exceed thresholds for a sustained period. Default sustain: 3000ms */
+  /** Optional peak logging options: log when CPU/memory exceed thresholds for a sustained period. Default sustain: 5000ms */
   logPeaks?: {
     cpuThreshold?: number;        
     memoryThresholdMb?: number;   
@@ -43,7 +46,7 @@ export class ResourceGuard {
     this.opts.sustainForMs ??= 10000;
     this.opts.hardKillAfterMs ??= 5000;
     if (this.opts.logPeaks) {
-      this.opts.logPeaks.sustainMs ??= 3000;
+      this.opts.logPeaks.sustainMs ??= 5000;
     }
   }
 
@@ -78,6 +81,14 @@ export class ResourceGuard {
     if (needMem) {
       currentMemMb = process.memoryUsage().rss / 1024 / 1024;
       if (this.opts.memoryLimitMb && currentMemMb > this.opts.memoryLimitMb) over = true;
+    }
+
+    if (this.opts.debug) {
+      const cpuMsg = this.opts.cpuLimit ? `CPU: ${currentCpuPercent?.toFixed(1)}%;` : '';
+      const memMsg = this.opts.memoryLimitMb ? `MEM: ${currentMemMb?.toFixed(0)}MB;` : '';
+      const msg = `${cpuMsg}${memMsg}`;
+      if (this.opts.logger) this.opts.logger.debug(`${msg}`);
+      else console.debug(`${msg}`);
     }
 
     this.lastTime = nowTime;
