@@ -10,6 +10,6 @@ export interface DefaultClausesI {
   maxUpdatedAt?:Date;
 }
 
-export type WhereClausesOf<T, P extends keyof T = Exclude<keyof T,keyof DefaultClausesI>> = {
+export type WhereClausesOf<T, P extends keyof T = Exclude<keyof T,keyof DefaultClausesI | 'metafields' | 'translations'>> = {
   [K in P]?: T[K] | T[K][]
 }
