@@ -1,32 +1,23 @@
 import { applyDecorators, Type as TypeI } from "@nestjs/common";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
-import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
+import { plainToInstance, Transform, Type } from "class-transformer";
+import { IsArray, IsOptional, ValidateNested } from "class-validator";
 
-export class MetafieldClauseDto {
-  @IsString()
-  @IsNotEmpty()
-  key: string;
-
-  @IsString()
-  @IsNotEmpty()
-  value: string;
-}
-
-export const IsMetafieldClause = () => {
+export const IsMetafieldClause = <T>(dto: TypeI<T>) => {
   return applyDecorators(
     ApiPropertyOptional({
+      type:String,
       description: 'A key:value couple or a comma-separated list of couples. Format: key1:value1,key2:value2'
     }),
     Transform(({ value }: { value: string }) => 
-      value.split(',').map(pair => {
-        const [key, value] = pair.split(':');
-        return { key: key.trim(), value: value.trim() };
-      })
+      plainToInstance(dto, value.split(',').map(pair => {
+        const [key, val] = pair.split(':');
+        return { key: key.trim(), value: val.trim() };
+      }))
     ),
     IsOptional(),
     IsArray(),
     ValidateNested({ each: true }),
-    Type(() => MetafieldClauseDto)
+    Type(() => dto)
   );
 };
