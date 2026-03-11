@@ -1,4 +1,4 @@
-import { DefaultClausesI, IsDateStringClause, IsMetafieldClause, IsNumberClause, IsTranslationClause } from "../dto/clauses";
+import { DefaultClausesI, IsDateStringClause, IsNumberClause } from "../dto/clauses";
 import { PaginatedQueryDto } from "../dto/pagination";
 
 export abstract class PaginatedQueryA extends PaginatedQueryDto implements DefaultClausesI {
@@ -22,10 +22,4 @@ export abstract class PaginatedQueryA extends PaginatedQueryDto implements Defau
 
   @IsDateStringClause()
   maxUpdatedAt?:Date
-
-  @IsMetafieldClause()
-  metafields?: Record<string, string>[];
-
-  @IsTranslationClause()
-  translations?: Record<string, string>[];
 }
