@@ -1,12 +1,14 @@
 import { join } from "path";
 import Handlebars from 'handlebars';
-import { readFile } from "fs/promises";
+import { readFile, stat } from "fs/promises";
 
 export class EmailBuilder {
   basePath = join(process.cwd(),'templates','email')
   pattern:string;
   group:string;
   locale:string;
+  header = 'header';
+  footer = 'footer';
 
   setGroup(group:string) {
     this.group = group
@@ -23,22 +25,63 @@ export class EmailBuilder {
     return this
   }
 
-  async build(args?:Record<string,any>) {
-    const [Subject,Locales,Body,Doc,Header,Footer] = await Promise.all([
-      readFile(join(this.basePath,this.group,'locales',`subject.json`),'utf-8'),
-      readFile(join(this.basePath,this.group,'locales',`${this.locale}.json`),'utf-8'),
-      readFile(join(this.basePath,this.group,'partials',`${this.pattern}.hbs`),'utf-8'),
-      readFile(join(this.basePath,this.group,'doc.hbs'),'utf-8'),
-      readFile(join(this.basePath,this.group,'partials',`header.hbs`),'utf-8'),
-      readFile(join(this.basePath,this.group,'partials',`footer.hbs`),'utf-8'),
-    ])
-    const subject = JSON.parse(Subject)[this.pattern][this.locale]
-    const locale = JSON.parse(Locales)
-    Handlebars.registerHelper('locale',(ctx) => locale[ctx] ?? ctx)
+  setHeader(header:string) {
+    this.header = header
+    return this
+  }
+
+  setFooter(footer:string) {
+    this.footer = footer
+    return this
+  }
+
+  private paths() {
+    const mainPath = join(this.basePath,this.group)
+    return [
+      join(mainPath,'doc.hbs'),
+      join(mainPath,'partials',`${this.header}.hbs`),
+      join(mainPath,'partials',`${this.footer}.hbs`),
+      join(mainPath,'partials',`${this.pattern}.hbs`),
+      join(mainPath,'locales',`subject.json`),
+      join(mainPath,'locales',`${this.locale}.json`),
+    ]
+  }
+
+  async safeCheck(){
+    const paths = [
+      join(this.basePath,this.group),
+      ...this.paths()
+    ]
+    const results = await Promise.all(
+      paths.map(p => stat(p).then(() => true).catch(() => false))
+    );
+   
+    const missing = paths.filter((_, i) => !results[i]);
+
+    if(missing.length > 0) throw new Error(`Missing paths: ${missing.join()}`)
+  }
+
+  async initEmail() {
+    const [Container,Header,Footer,Body,Subjects,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
+
+    const parsedSubjects = JSON.parse(Subjects)
+    if(!(this.pattern in parsedSubjects)) throw new Error(`Missing subject: ${this.pattern}`)
+    if(!(this.locale in parsedSubjects[this.pattern])) throw new Error(`Missing locale: ${this.locale} for subject ${this.pattern}`)
+    const subject = parsedSubjects[this.pattern][this.locale]
+    const labels = JSON.parse(Labels)
+    Handlebars.registerHelper('locale',(ctx) => labels[ctx] ?? ctx)
     Handlebars.registerPartial('header',Header)
     Handlebars.registerPartial('footer',Footer)
     Handlebars.registerPartial('body',Body)
-    const template = Handlebars.compile(Doc)
+    const template = Handlebars.compile(Container)
+    return {
+      subject,
+      template
+    }
+  }
+
+  async build(args?:Record<string,any>) {
+    const {subject,template} = await this.initEmail()
     return {
       subject:this.replace(subject,args),
       html:template(args)
