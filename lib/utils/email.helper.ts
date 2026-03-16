@@ -2,10 +2,6 @@ import { join } from "path";
 import Handlebars from 'handlebars';
 import { readFile, stat } from "fs/promises";
 
-function getNestedValue(obj: Record<string, any>, path: string): string {
-  return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? path;
-}
-
 export class EmailBuilder {
   basePath = join(process.cwd(),'templates','email')
   pattern:string;
@@ -64,11 +60,15 @@ export class EmailBuilder {
     if(missing.length > 0) throw new Error(`Missing paths: ${missing.join()}`)
   }
 
+  private getNestedValue(obj: Record<string, any>, path: string): string {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? path;
+  }
+
   async initEmail() {
     const [Container,Header,Footer,Body,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
 
     const labels = JSON.parse(Labels)
-    const subject = getNestedValue(labels,`${this.pattern}.subject`)
+    const subject = this.getNestedValue(labels,`${this.pattern}.subject`)
     Handlebars.registerHelper('fullDateTime', function(date, locale) {
       return new Date(date).toLocaleString(locale, { dateStyle: 'full', timeStyle: 'short' });
     });
@@ -76,7 +76,7 @@ export class EmailBuilder {
       return condition ? valTrue : valFalse;
     });
     Handlebars.registerHelper('t', (key: string, options: Handlebars.HelperOptions) => {
-      const template = getNestedValue(labels, key);
+      const template = this.getNestedValue(labels, key);
       if (options.hash && Object.keys(options.hash).length > 0) {
         return template.replace(/\{\{(\w+)\}\}/g, (_, k) => options.hash[k] ?? `{{${k}}}`);
       }
