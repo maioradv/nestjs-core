@@ -2,6 +2,10 @@ import { join } from "path";
 import Handlebars from 'handlebars';
 import { readFile, stat } from "fs/promises";
 
+function getNestedValue(obj: Record<string, any>, path: string): string {
+  return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? path;
+}
+
 export class EmailBuilder {
   basePath = join(process.cwd(),'templates','email')
   pattern:string;
@@ -42,7 +46,6 @@ export class EmailBuilder {
       join(mainPath,'partials',`${this.header}.hbs`),
       join(mainPath,'partials',`${this.footer}.hbs`),
       join(mainPath,'partials',`${this.pattern}.hbs`),
-      join(mainPath,'locales',`subject.json`),
       join(mainPath,'locales',`${this.locale}.json`),
     ]
   }
@@ -62,19 +65,22 @@ export class EmailBuilder {
   }
 
   async initEmail() {
-    const [Container,Header,Footer,Body,Subjects,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
+    const [Container,Header,Footer,Body,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
 
-    const parsedSubjects = JSON.parse(Subjects)
-    if(!(this.pattern in parsedSubjects)) throw new Error(`Missing subject: ${this.pattern}`)
-    if(!(this.locale in parsedSubjects[this.pattern])) throw new Error(`Missing locale: ${this.locale} for subject ${this.pattern}`)
-    const subject = parsedSubjects[this.pattern][this.locale]
     const labels = JSON.parse(Labels)
-    Handlebars.registerHelper('locale',(ctx) => labels[ctx] ?? ctx)
-    Handlebars.registerHelper('dateToLocaleString', function(date, locale) {
+    const subject = getNestedValue(labels,`${this.pattern}.subject`)
+    Handlebars.registerHelper('fullDateTime', function(date, locale) {
       return new Date(date).toLocaleString(locale, { dateStyle: 'full', timeStyle: 'short' });
     });
     Handlebars.registerHelper('ternary', function (condition, valTrue, valFalse) {
       return condition ? valTrue : valFalse;
+    });
+    Handlebars.registerHelper('t', (key: string, options: Handlebars.HelperOptions) => {
+      const template = getNestedValue(labels, key);
+      if (options.hash && Object.keys(options.hash).length > 0) {
+        return template.replace(/\{\{(\w+)\}\}/g, (_, k) => options.hash[k] ?? `{{${k}}}`);
+      }
+      return template;
     });
     Handlebars.registerPartial('header',Header)
     Handlebars.registerPartial('footer',Footer)
