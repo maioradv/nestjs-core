@@ -70,6 +70,12 @@ export class EmailBuilder {
     const subject = parsedSubjects[this.pattern][this.locale]
     const labels = JSON.parse(Labels)
     Handlebars.registerHelper('locale',(ctx) => labels[ctx] ?? ctx)
+    Handlebars.registerHelper('dateToLocaleString', function(date, locale) {
+      return new Date(date).toLocaleString(locale, { dateStyle: 'full', timeStyle: 'short' });
+    });
+    Handlebars.registerHelper('ternary', function (condition, valTrue, valFalse) {
+      return condition ? valTrue : valFalse;
+    });
     Handlebars.registerPartial('header',Header)
     Handlebars.registerPartial('footer',Footer)
     Handlebars.registerPartial('body',Body)
@@ -84,7 +90,10 @@ export class EmailBuilder {
     const {subject,template} = await this.initEmail()
     return {
       subject:this.replace(subject,args),
-      html:template(args)
+      html:template({
+        ...args,
+        locale:this.locale
+      })
     }
   }
 
