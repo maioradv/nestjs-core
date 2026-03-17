@@ -95,7 +95,7 @@ export class EmailBuilder {
   async build(args?:Record<string,any>) {
     const {subject,template} = await this.initEmail()
     return {
-      subject:this.replace(subject,args),
+      subject,
       html:template({
         ...args,
         locale:this.locale
