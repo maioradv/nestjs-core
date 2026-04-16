@@ -1,6 +1,6 @@
 {
   "name": "@maioradv/nestjs-core",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
@@ -17,9 +17,6 @@
     "publish:npm": "npm publish --access public"
   },
   "dependencies": {
-    "request-ip": "^3"
-  },
-  "devDependencies": {
     "@aws-sdk/client-s3": "^3",
     "@maioradv/accounts-lib": "*",
     "@nestjs/cache-manager": "^3",
@@ -30,11 +27,6 @@
     "@nestjs/swagger": "^11",
     "@nestjs/throttler": "^6",
     "@sentry/nestjs": "^10",
-    "@types/bcrypt": "^6",
-    "@types/multer": "^2",
-    "@types/node": "^24.6.1",
-    "@types/nodemailer": "^8",
-    "@types/request-ip": "*",
     "bcrypt": "^6",
     "class-transformer": "^0.5",
     "class-validator": "^0.15",
@@ -43,11 +35,19 @@
     "image-size": "^2",
     "nest-winston": "^1",
     "nodemailer": "^8",
+    "request-ip": "^3",
     "sharp": "^0.34",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
     "winston": "^3",
     "winston-daily-rotate-file": "^5"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6",
+    "@types/multer": "^2",
+    "@types/node": "^24.6.1",
+    "@types/nodemailer": "^8",
+    "@types/request-ip": "*",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "@aws-sdk/client-s3": "^3",
