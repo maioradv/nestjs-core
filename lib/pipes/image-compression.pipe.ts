@@ -1,6 +1,7 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
 import { extname } from 'path';
 import sharp from 'sharp';
+import 'multer';
 
 export type CompressionOptions = {
   resolutionCap?:number,
@@ -49,7 +50,7 @@ export class ImageCompressionPipe implements PipeTransform<Express.Multer.File, 
       return file
 
     } catch (error) {
-      throw new BadRequestException(`Error processing the image: ${error?.message}`);
+      throw new BadRequestException(`Error processing the image: ${(error as Error)?.message}`);
     }
   }
 

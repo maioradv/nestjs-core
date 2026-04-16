@@ -29,7 +29,7 @@ export interface DefaultSortingI {
   id?: Sorting;
   createdAt?: Sorting;
   updatedAt?: Sorting;
-  get orderBy();
+  get orderBy() : Record<string,any>[];
 }
 
 export interface SortingQueryI<T extends SortingDto> {

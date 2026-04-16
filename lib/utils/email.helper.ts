@@ -61,6 +61,7 @@ export class EmailBuilder {
   }
 
   private getNestedValue(obj: Record<string, any>, path: string): string {
+    // @ts-ignore
     return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? path;
   }
 

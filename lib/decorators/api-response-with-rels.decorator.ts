@@ -82,7 +82,7 @@ export function handleRelationsForSwagger(relations: RelationDefs): {
   relations.manyToMany?.forEach((TCouple) => {
     const [T,S] = TCouple
     const [name,schema] = Array.isArray(T) ? T : [T.name,T]
-    const models = Array.isArray(S) ? S : [S]
+    const models = Array.isArray(S) ? S as TModel[] : [S]
     let rels:Record<string,SchemaObject | ReferenceObject> = {}
     models.forEach(M => {
       const [name,schema] = Array.isArray(M) ? M : [M.name,M]

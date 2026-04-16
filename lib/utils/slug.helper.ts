@@ -1,5 +1,5 @@
 export class Slugger {
-  private unique;
+  private unique:boolean;
   constructor(private readonly word: string) {}
 
   public get(): string {

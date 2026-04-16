@@ -4,6 +4,7 @@ import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, PutObjec
 import { AWSConfig } from "../config/aws.config";
 import { createHash } from "crypto";
 import { imageSize as sizeOf } from 'image-size'
+import 'multer';
 import { LoggerFactory } from "../logger";
 
 export type UploadImageResponse = {
