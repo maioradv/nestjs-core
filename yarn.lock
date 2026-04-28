@@ -821,12 +821,31 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@maioradv/accounts-lib@*":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.4.1.tgz#4ddfc3ec8624d60e93da0374178d54e3059124de"
-  integrity sha512-XfsTjtBB0EV+hw5BDXGtNjKxStoQNiHTG5DBC1aYt+4n+lR4BetZ+DH6eqtDWXY6W32EV24IqAG7EYk9qKFkQQ==
+"@maioradv/accounts-lib@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.5.0.tgz#72bc0bf73be05bfebe2f531c5f29d67d13e4d6bd"
+  integrity sha512-p3rOtz4UcWQJ5mEzCwH7dSaWD2L0Yf7eUxZ4RJbLPxAFjTrI9E4rVzFvhFDC3ZsQEc6dT+KsdzE+F0BxQyNTrg==
   dependencies:
-    axios "^1.10.0"
+    "@maioradv/client-core" "^0.0.4"
+    "@maioradv/types" "^0.0.4"
+
+"@maioradv/client-core@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@maioradv/client-core/-/client-core-0.0.4.tgz#4599dc5a0a2b7bde2d00f27604651b0f04017d8c"
+  integrity sha512-F/qQ7+wx/czUlchJExrXFkhJ6y8mZWRdwgGouXx5n+WNG9PpErK6tG1aMTm6vXL5k4k3ivjInjkWD//HDFb+bA==
+  dependencies:
+    "@maioradv/types" "^0.0.2"
+    axios "^1.15"
+
+"@maioradv/types@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@maioradv/types/-/types-0.0.2.tgz#1ed5f51136e592c20d2e80b70242341ae1c8166c"
+  integrity sha512-9Kr9zx1j7gqqIxKINz5KNbE8PNKwKq9m1lnJ95mxE0+cslVWK+Hl0GUqOfS87CWvbpl3WdCsSCPd04GHXM+UHw==
+
+"@maioradv/types@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@maioradv/types/-/types-0.0.4.tgz#905992881b495ecb1b34eb54b4450624139a1d6f"
+  integrity sha512-+RpX2OZ5XtI+DtjPeDNy5L4B6uy+xt9Xx0sWaOWzz9Ktg1bdzSuYuKqtQ/vBlBAhqCTKu+ivhHYWQqSV2xdeYw==
 
 "@microsoft/tsdoc@0.16.0":
   version "0.16.0"
@@ -2091,14 +2110,14 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-axios@^1.10.0:
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.12.2.tgz#6c307390136cf7a2278d09cec63b136dfc6e6da7"
-  integrity sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==
+axios@^1.15:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.15.2.tgz#eb8fb6d30349abace6ade5b4cb4d9e8a0dc23e5b"
+  integrity sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==
   dependencies:
-    follow-redirects "^1.15.6"
-    form-data "^4.0.4"
-    proxy-from-env "^1.1.0"
+    follow-redirects "^1.15.11"
+    form-data "^4.0.5"
+    proxy-from-env "^2.1.0"
 
 backo2@^1.0.2:
   version "1.0.2"
@@ -2555,15 +2574,15 @@ fn.name@1.x.x:
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
 
-follow-redirects@^1.15.6:
-  version "1.15.6"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.6.tgz#7f815c0cda4249c74ff09e95ef97c23b5fd0399b"
-  integrity sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
+follow-redirects@^1.15.11:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.0.tgz#28474a159d3b9d11ef62050a14ed60e4df6d61bc"
+  integrity sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==
 
-form-data@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.4.tgz#784cdcce0669a9d68e94d11ac4eea98088edd2c4"
-  integrity sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==
+form-data@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.5.tgz#b49e48858045ff4cbf6b03e1805cebcad3679053"
+  integrity sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
@@ -3142,10 +3161,10 @@ proxy-addr@^2.0.7:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
 
-proxy-from-env@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
-  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
+proxy-from-env@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-2.1.0.tgz#a7487568adad577cfaaa7e88c49cab3ab3081aba"
+  integrity sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==
 
 qs@^6.14.0:
   version "6.14.0"
