@@ -1,6 +1,6 @@
 {
   "name": "@maioradv/nestjs-core",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3",
-    "@maioradv/accounts-lib": "*",
+    "@maioradv/accounts-lib": "^1.5",
     "@nestjs/cache-manager": "^3",
     "@nestjs/common": "^11",
     "@nestjs/config": "^4",
@@ -51,7 +51,7 @@
   },
   "peerDependencies": {
     "@aws-sdk/client-s3": "^3",
-    "@maioradv/accounts-lib": "*",
+    "@maioradv/accounts-lib": "^1.5",
     "@nestjs/cache-manager": "^3",
     "@nestjs/common": "^11",
     "@nestjs/config": "^4",
