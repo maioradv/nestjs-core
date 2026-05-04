@@ -1,5 +1,6 @@
 export * from './crypt.service'
 export * from './s3.service'
 export * from './accounts.service'
+export * from './notifications.service'
 export * from './storage.service'
 export * from './mailer.service'

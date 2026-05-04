@@ -1,8 +1,10 @@
 import { AccountsApiConfigs } from "@maioradv/accounts-lib"
+import { NotificationsApiConfigs } from "@maioradv/notifications-lib"
 
 export type MaiorConfig = {
   accounts?:AccountsApiConfigs,
-  smtp?:SmtpConfig
+  smtp?:SmtpConfig,
+  notifications?:NotificationsApiConfigs
 }
 
 export type SmtpConfig = {
