@@ -821,10 +821,10 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
-"@maioradv/accounts-lib@^1.5":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.5.2.tgz#05a043c7a263bf82d3c6982eb63815c16298085c"
-  integrity sha512-EKGJ3g7lfczhwbnkSMYPLtyVBOZ3A1QSsIrZ7o3hm7zx3yNmYPNA2A7am0FmlWhExfZFhl28gXteTdoPg9jE+Q==
+"@maioradv/accounts-lib@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@maioradv/accounts-lib/-/accounts-lib-1.5.5.tgz#4bd3a768cdcf453a37405075558a97970424b147"
+  integrity sha512-AOQKqBH9SiyMxxyPEzMlwafViFyTEyQHiZuy3Ui+6TiNh7ai/3oHM61bvQEwiQNgEGXMT+juwkq/cIJDMCfIIQ==
   dependencies:
     "@maioradv/client-core" "^0.0.4"
     "@maioradv/types" "^0.0.4"
