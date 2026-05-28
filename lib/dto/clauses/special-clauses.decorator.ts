@@ -2,6 +2,7 @@ import { applyDecorators, BadRequestException } from "@nestjs/common";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsArray, IsOptional } from "class-validator";
+import { MetadataOperator, MetadataOperators, MetadataFilter } from "@maioradv/types";
 
 export const IsMetafieldClause = () => {
   return applyDecorators(
@@ -56,26 +57,7 @@ const parseValue = (raw: string): unknown => {
   return trimmed;
 };
 
-const METADATA_OPERATORS = [
-  'equals',
-  'not',
-  'gt',
-  'gte',
-  'lt',
-  'lte',
-  'string_contains',
-  'string_starts_with',
-  'string_ends_with',
-  'array_contains'
-] as const;
-export type MetadataOperator = typeof METADATA_OPERATORS[number];
-const allowedOperators = new Set<string>(METADATA_OPERATORS);
-
-export type MetadataFilter = {
-  path:string[],
-  operator:MetadataOperator,
-  value:null|string|boolean|number
-}
+const allowedOperators = new Set<string>(MetadataOperators);
 
 const getMetadataClauseErrors = (item: MetadataFilter | null | undefined, index: number, property: string): string[] => {
   if (!item) return [`${property}[${index}] is invalid`];
@@ -86,7 +68,7 @@ const getMetadataClauseErrors = (item: MetadataFilter | null | undefined, index:
 
   if (!hasPath) errors.push(`${property}[${index}].path must not be empty`);
   if (!allowedOperators.has(item.operator)) {
-    errors.push(`${property}[${index}].operator must be one of: ${METADATA_OPERATORS.join(', ')}`);
+    errors.push(`${property}[${index}].operator must be one of: ${MetadataOperators.join(', ')}`);
   }
   if (!hasValue) errors.push(`${property}[${index}].value must not be empty`);
 

@@ -855,6 +855,11 @@
   resolved "https://registry.yarnpkg.com/@maioradv/types/-/types-0.0.4.tgz#905992881b495ecb1b34eb54b4450624139a1d6f"
   integrity sha512-+RpX2OZ5XtI+DtjPeDNy5L4B6uy+xt9Xx0sWaOWzz9Ktg1bdzSuYuKqtQ/vBlBAhqCTKu+ivhHYWQqSV2xdeYw==
 
+"@maioradv/types@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@maioradv/types/-/types-0.0.7.tgz#e0856304bc8797e1c44a15a84fc9cb4d580edaaa"
+  integrity sha512-adbVLOH6ESJaLxmvvnVsPIVK5K6WFPOW/dqPXL2DI1nYHgOM4jjLH+0wzUIO0j72FRsjGAQH2Ue24eINSoO5cQ==
+
 "@microsoft/tsdoc@0.16.0":
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.16.0.tgz#2249090633e04063176863a050c8f0808d2b6d2b"
