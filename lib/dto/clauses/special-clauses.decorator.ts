@@ -71,6 +71,12 @@ const METADATA_OPERATORS = [
 export type MetadataOperator = typeof METADATA_OPERATORS[number];
 const allowedOperators = new Set<string>(METADATA_OPERATORS);
 
+export type MetadataFilter = {
+  path:string[],
+  operator:MetadataOperator,
+  value:null|string|boolean|number
+}
+
 export const IsMetadataClause = () => {
   return applyDecorators(
     ApiPropertyOptional({
@@ -97,11 +103,12 @@ export const IsMetadataClause = () => {
 
           const isNull = ((operator === 'equals' || operator === 'not') && value === 'null') ? true : false
 
-          return {
+          const result:MetadataFilter = {
             path: path.split('.'),
             operator:operator as MetadataOperator,
             value: (isNull ? null : parseValue(value)) as (string|number|boolean|null)
           };
+          return result
         });
     }),
     IsOptional(),
