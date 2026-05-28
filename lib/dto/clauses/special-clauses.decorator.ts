@@ -1,4 +1,4 @@
-import { applyDecorators, Type as TypeI } from "@nestjs/common";
+import { applyDecorators, BadRequestException, Type as TypeI } from "@nestjs/common";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { plainToInstance, Transform, Type } from "class-transformer";
 import { IsArray, IsOptional, ValidateNested } from "class-validator";
@@ -39,6 +39,71 @@ export const IsTranslationClause = () => {
         return obj;
       })
     ),
+    IsOptional(),
+    IsArray(),
+  );
+};
+
+const parseValue = (raw: string): unknown => {
+  const trimmed = raw.trim();
+
+  if (trimmed === 'true') return true;
+  if (trimmed === 'false') return false;
+
+  const num = Number(trimmed);
+  if (!Number.isNaN(num) && trimmed !== '') return num;
+
+  return trimmed;
+};
+
+const METADATA_OPERATORS = [
+  'equals',
+  'not',
+  'gt',
+  'gte',
+  'lt',
+  'lte',
+  'string_contains',
+  'string_starts_with',
+  'string_ends_with',
+  'array_contains'
+] as const;
+export type MetadataOperator = typeof METADATA_OPERATORS[number];
+const allowedOperators = new Set<string>(METADATA_OPERATORS);
+
+export const IsMetadataClause = () => {
+  return applyDecorators(
+    ApiPropertyOptional({
+      type: String,
+      description:'Metadata filter format: path:operator:value, multiple with ,. Example: user.id:equals:1,tags:array_contains:vip',
+    }),
+    Transform(({ value }: { value: string }) => {
+      if (!value) return [];
+
+      return value
+        .split(',')
+        .map(c => c.trim())
+        .filter(Boolean)
+        .map(clause => {
+          const [rawPath, rawOperator, ...rawValue] = clause.split(':');
+          const path = rawPath?.trim()
+          const operator = rawOperator?.trim();
+          const value = rawValue.join(':').trim()
+
+          if(!path) throw new BadRequestException(`Path empty`);
+          if (!allowedOperators.has(operator)) {
+            throw new BadRequestException(`Invalid metadata operator: ${operator} must be one of ${METADATA_OPERATORS.join()}`);
+          }
+
+          const isNull = ((operator === 'equals' || operator === 'not') && value === 'null') ? true : false
+
+          return {
+            path: path.split('.'),
+            operator:operator as MetadataOperator,
+            value: (isNull ? null : parseValue(value)) as (string|number|boolean|null)
+          };
+        });
+    }),
     IsOptional(),
     IsArray(),
   );
