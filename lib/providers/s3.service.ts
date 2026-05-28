@@ -17,6 +17,11 @@ export type UploadImageResponse = {
   size:number;
 }
 
+export type S3ServiceOptions = {
+  folder?:string,
+  limit?:number
+}
+
 @Injectable()
 export class S3Service {
   public readonly client:S3Client;
@@ -34,8 +39,9 @@ export class S3Service {
     })
   }
 
-  public async uploadImage(file: Express.Multer.File): Promise<UploadImageResponse> {
+  public async uploadImage(file: Express.Multer.File,opts:S3ServiceOptions = {}): Promise<UploadImageResponse> {
     try {
+      const FOLDER = opts.folder ?? this.sdkConfigs.folder
       let fileName = `${this.randomString(6)}-${file.originalname}`
       /*try {
         const check = await this.client.send(
@@ -49,7 +55,7 @@ export class S3Service {
       const response = await this.client.send(
         new PutObjectCommand({
           Bucket: this.sdkConfigs.bucketName,
-          Key: `${this.sdkConfigs.folder}/${fileName}`,
+          Key: `${FOLDER}/${fileName}`,
           Body: file.buffer,
           ContentType: file.mimetype
         })
@@ -57,7 +63,7 @@ export class S3Service {
       const size = sizeOf(file.buffer)
       const checksum = createHash('md5').update(file.buffer).digest("base64");
       return {
-        src:`${this.sdkConfigs.baseUrl}/${this.sdkConfigs.folder}/${fileName}`,
+        src:`${this.sdkConfigs.baseUrl}/${FOLDER}/${fileName}`,
         width: size.width,
         height: size.height,
         checksum: checksum,
@@ -71,16 +77,17 @@ export class S3Service {
     }
   }
 
-  public async removeFile(fileName: string) {
+  public async removeFile(fileName: string,opts:S3ServiceOptions = {}) {
+    const FOLDER = opts.folder ?? this.sdkConfigs.folder
     return this.client.send(
       new DeleteObjectCommand({
         Bucket: this.sdkConfigs.bucketName,
-        Key: `${this.sdkConfigs.folder}/${fileName}`,
+        Key: `${FOLDER}/${fileName}`,
       })
     )
   }
 
-  public async listFiles(opts:{limit?:number,folder?:string} = {}) {
+  public async listFiles(opts:S3ServiceOptions = {}) {
     return this.client.send(
       new ListObjectsCommand({
         Bucket: this.sdkConfigs.bucketName,
@@ -103,7 +110,7 @@ export class S3Service {
     )
   }
 
-  public async clearAll(opts:{folder?:string} = {}) {
+  public async clearAll(opts:S3ServiceOptions = {}) {
     const paginator = paginateListObjectsV2(
       { client:this.client },
       {
