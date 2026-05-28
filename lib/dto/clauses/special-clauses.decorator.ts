@@ -1,7 +1,7 @@
-import { applyDecorators } from "@nestjs/common";
+import { applyDecorators, BadRequestException } from "@nestjs/common";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsArray, IsOptional, Validate, ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from "class-validator";
+import { IsArray, IsOptional } from "class-validator";
 
 export const IsMetafieldClause = () => {
   return applyDecorators(
@@ -45,7 +45,7 @@ export const IsTranslationClause = () => {
 };
 
 const parseValue = (raw: string): unknown => {
-  const trimmed = raw.trim();
+  const trimmed = raw?.trim();
 
   if (trimmed === 'true') return true;
   if (trimmed === 'false') return false;
@@ -99,10 +99,10 @@ export const IsMetadataClause = () => {
       type: String,
       description:'Metadata filter format: path:operator:value, multiple with ,. Example: user.id:equals:1,tags:array_contains:vip',
     }),
-    Transform(({ value }: { value: string }) => {
+    Transform(({ value, key }: { value: string, key: string }) => {
       if (!value) return [];
 
-      return value
+      const clauses = value
         .split(',')
         .map(c => c.trim())
         .filter(Boolean)
@@ -118,24 +118,13 @@ export const IsMetadataClause = () => {
             value: (isNull ? null : parseValue(value)) as (string|number|boolean|null)
           } as MetadataFilter;
         });
+
+      const errors = clauses.flatMap((item, index) => getMetadataClauseErrors(item, index, key));
+      if (errors.length) throw new BadRequestException(errors);
+
+      return clauses;
     }),
     IsOptional(),
     IsArray(),
-    Validate(IsMetadata)
   );
 };
-
-@ValidatorConstraint({ name: 'IsMetadataConstraint', async: false })
-export class IsMetadata implements ValidatorConstraintInterface {
-  validate(value: MetadataFilter[]) {
-    if (!value?.length) return true;
-    return value.every((item, index) => getMetadataClauseErrors(item, index, 'metadata').length === 0);
-  }
-
-  defaultMessage(args: ValidationArguments) {
-    const value = args.value as (MetadataFilter | null)[];
-    const errors = value?.flatMap((item, index) => getMetadataClauseErrors(item, index, args.property)) ?? [];
-
-    return errors.join(', ');
-  }
-}
