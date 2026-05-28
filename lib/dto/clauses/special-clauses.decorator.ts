@@ -1,7 +1,7 @@
-import { applyDecorators, BadRequestException, Type as TypeI } from "@nestjs/common";
+import { applyDecorators } from "@nestjs/common";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { plainToInstance, Transform, Type } from "class-transformer";
-import { IsArray, IsOptional, ValidateNested } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsArray, IsOptional, Validate, ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments } from "class-validator";
 
 export const IsMetafieldClause = () => {
   return applyDecorators(
@@ -77,6 +77,22 @@ export type MetadataFilter = {
   value:null|string|boolean|number
 }
 
+const getMetadataClauseErrors = (item: MetadataFilter | null | undefined, index: number, property: string): string[] => {
+  if (!item) return [`${property}[${index}] is invalid`];
+
+  const errors: string[] = [];
+  const hasPath = Array.isArray(item.path) && item.path.some(part => part.trim().length > 0);
+  const hasValue = item.value !== undefined && item.value !== '';
+
+  if (!hasPath) errors.push(`${property}[${index}].path must not be empty`);
+  if (!allowedOperators.has(item.operator)) {
+    errors.push(`${property}[${index}].operator must be one of: ${METADATA_OPERATORS.join(', ')}`);
+  }
+  if (!hasValue) errors.push(`${property}[${index}].value must not be empty`);
+
+  return errors;
+};
+
 export const IsMetadataClause = () => {
   return applyDecorators(
     ApiPropertyOptional({
@@ -91,27 +107,35 @@ export const IsMetadataClause = () => {
         .map(c => c.trim())
         .filter(Boolean)
         .map(clause => {
-          const [rawPath, rawOperator, ...rawValue] = clause.split(':');
+          const [rawPath, rawOperator, ...rawValue] = clause.trim().split(':');
           const path = rawPath?.trim()
           const operator = rawOperator?.trim();
           const value = rawValue.join(':').trim()
-
-          if(!path) throw new BadRequestException(`Path empty`);
-          if (!allowedOperators.has(operator)) {
-            throw new BadRequestException(`Invalid metadata operator: ${operator} must be one of ${METADATA_OPERATORS.join()}`);
-          }
-
           const isNull = ((operator === 'equals' || operator === 'not') && value === 'null') ? true : false
-
-          const result:MetadataFilter = {
+          return {
             path: path.split('.'),
             operator:operator as MetadataOperator,
             value: (isNull ? null : parseValue(value)) as (string|number|boolean|null)
-          };
-          return result
+          } as MetadataFilter;
         });
     }),
     IsOptional(),
     IsArray(),
+    Validate(IsMetadata)
   );
 };
+
+@ValidatorConstraint({ name: 'IsMetadataConstraint', async: false })
+export class IsMetadata implements ValidatorConstraintInterface {
+  validate(value: MetadataFilter[]) {
+    if (!value?.length) return true;
+    return value.every((item, index) => getMetadataClauseErrors(item, index, 'metadata').length === 0);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    const value = args.value as (MetadataFilter | null)[];
+    const errors = value?.flatMap((item, index) => getMetadataClauseErrors(item, index, args.property)) ?? [];
+
+    return errors.join(', ');
+  }
+}
