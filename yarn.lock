@@ -837,13 +837,21 @@
     "@maioradv/types" "^0.0.2"
     axios "^1.15"
 
-"@maioradv/notifications-lib@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@maioradv/notifications-lib/-/notifications-lib-1.0.8.tgz#dd17f65306a571bcc389afd6f378445b4b51a74d"
-  integrity sha512-0e+Svri0gE9Tn4I2yYu8TcfoN2QGVifUL+JxKrK716W/IF+7l+4KGU9MMie8qbY79obT+bkJw8Q0CMXIoNcLZQ==
+"@maioradv/client-core@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@maioradv/client-core/-/client-core-0.0.5.tgz#43dc9502a45f980682b0ac581a20d7c3f40ce802"
+  integrity sha512-R+8r/EBuD/H4nXrfS/QCIag0qXjhdSfzwcyiFPpTagg44ftRRUQ/iwuKY9onW74wc7C67sLMiBsy5/Frhg6OwA==
   dependencies:
-    "@maioradv/client-core" "^0.0.4"
-    "@maioradv/types" "^0.0.4"
+    "@maioradv/types" "^0.0.7"
+    axios "^1.15"
+
+"@maioradv/notifications-lib@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@maioradv/notifications-lib/-/notifications-lib-1.0.9.tgz#c12f87b84ff1f758465903fc614ab391ba6f390b"
+  integrity sha512-Y2KNsv5JET2f1to808YMsJMXKIbdfj/chv1y1vAQKEz64KxxVvMfmlA4l6A+3C6ka0FGoDURF0Nf7UTI1Ohp1g==
+  dependencies:
+    "@maioradv/client-core" "^0.0.5"
+    "@maioradv/types" "^0.0.7"
 
 "@maioradv/types@^0.0.2":
   version "0.0.2"
