@@ -845,10 +845,10 @@
     "@maioradv/types" "^0.0.7"
     axios "^1.15"
 
-"@maioradv/notifications-lib@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@maioradv/notifications-lib/-/notifications-lib-1.1.1.tgz#67a8d26eb6b4602c9ac11dd53b5a31f277d586d6"
-  integrity sha512-lUfTDiDOcYBDedTwxmsZHiNrQZ5hnJrY0JCnK39EOm2mKW/v0ekgp398URGERFwAwpe/7KmAS7gaHsVQHWrY2w==
+"@maioradv/notifications-lib@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@maioradv/notifications-lib/-/notifications-lib-1.1.2.tgz#e7669cb570821c091d2a70e3b2406396f1dcedfa"
+  integrity sha512-8PWbhHf8iNRC8Laaa6X+KaHx57A2Ff8J1NKigmpcEWNy6Hsg+qjTqHYYVvVTbS4IEdc5i7+sF1hRgvSIu5sSjQ==
   dependencies:
     "@maioradv/client-core" "^0.0.5"
     "@maioradv/types" "^0.0.7"

@@ -2,13 +2,11 @@ import { join } from "path";
 import Handlebars from 'handlebars';
 import { readFile, stat } from "fs/promises";
 
-export class EmailBuilder {
-  basePath = join(process.cwd(),'templates','email')
+export class PushNotificationBuilder {
+  basePath = join(process.cwd(),'templates','push')
   pattern:string;
   group:string;
   locale:string;
-  header = 'header';
-  footer = 'footer';
 
   setGroup(group:string) {
     this.group = group
@@ -25,22 +23,10 @@ export class EmailBuilder {
     return this
   }
 
-  setHeader(header:string) {
-    this.header = header
-    return this
-  }
-
-  setFooter(footer:string) {
-    this.footer = footer
-    return this
-  }
-
   private paths() {
     const mainPath = join(this.basePath,this.group)
     return [
       join(mainPath,'doc.hbs'),
-      join(mainPath,'partials',`${this.header}.hbs`),
-      join(mainPath,'partials',`${this.footer}.hbs`),
       join(mainPath,'partials',`${this.pattern}.hbs`),
       join(mainPath,'locales',`${this.locale}.json`),
     ]
@@ -66,10 +52,10 @@ export class EmailBuilder {
   }
 
   async init() {
-    const [Container,Header,Footer,Body,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
+    const [Container,Body,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
 
     const labels = JSON.parse(Labels)
-    const subject = this.getNestedValue(labels,`${this.pattern}.subject`)
+    const title = this.getNestedValue(labels,`${this.pattern}.title`)
     Handlebars.registerHelper('fullDateTime', function(date, locale) {
       return new Date(date).toLocaleString(locale, { dateStyle: 'full', timeStyle: 'short' });
     });
@@ -83,21 +69,19 @@ export class EmailBuilder {
       }
       return template;
     });
-    Handlebars.registerPartial('header',Header)
-    Handlebars.registerPartial('footer',Footer)
     Handlebars.registerPartial('body',Body)
     const template = Handlebars.compile(Container)
     return {
-      subject,
+      title,
       template
     }
   }
 
   async build(args?:Record<string,any>) {
-    const {subject,template} = await this.init()
+    const {title,template} = await this.init()
     return {
-      subject,
-      html:template({
+      title,
+      body:template({
         ...args,
         locale:this.locale
       })
