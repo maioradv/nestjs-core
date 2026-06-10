@@ -29,6 +29,7 @@ export class PushNotificationBuilder {
       join(mainPath,'doc.hbs'),
       join(mainPath,'partials',`${this.pattern}.hbs`),
       join(mainPath,'locales',`${this.locale}.json`),
+      join(mainPath,'options',`${this.pattern}.json`),
     ]
   }
 
@@ -52,9 +53,10 @@ export class PushNotificationBuilder {
   }
 
   async init() {
-    const [Container,Body,Labels] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
+    const [Container,Body,Labels,Options] = await Promise.all(this.paths().map(path => readFile(path,'utf-8'))) 
 
     const labels = JSON.parse(Labels)
+    const options = JSON.parse(Options) as Record<string,unknown>
     const title = this.getNestedValue(labels,`${this.pattern}.title`)
     Handlebars.registerHelper('fullDateTime', function(date, locale) {
       return new Date(date).toLocaleString(locale, { dateStyle: 'full', timeStyle: 'short' });
@@ -73,18 +75,20 @@ export class PushNotificationBuilder {
     const template = Handlebars.compile(Container)
     return {
       title,
-      template
+      template,
+      options
     }
   }
 
   async build(args?:Record<string,any>) {
-    const {title,template} = await this.init()
+    const {title,template,options} = await this.init()
     return {
       title,
       body:template({
         ...args,
         locale:this.locale
-      })
+      }),
+      options
     }
   }
 
