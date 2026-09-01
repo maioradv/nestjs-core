@@ -15,7 +15,7 @@ export class StorageService {
     return await fs.readFile(realPath, {});
   }
 
-  public async write(relativePath:string,data:string | NodeJS.ArrayBufferView | Iterable<string | NodeJS.ArrayBufferView> | AsyncIterable<string | NodeJS.ArrayBufferView> | internal.Stream): Promise<void> {
+  public async write(relativePath:string,data:string | NodeJS.ArrayBufferView): Promise<void> {
     const realPath = this.realPath(relativePath)
     await this.safeDirectory(realPath)
     return await fs.writeFile(realPath, data, 'utf8');
