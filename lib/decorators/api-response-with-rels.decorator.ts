@@ -1,7 +1,6 @@
 import { Type, applyDecorators } from "@nestjs/common";
-import { ApiExtraModels, ApiResponse, ApiResponseMetadata, getSchemaPath } from "@nestjs/swagger";
+import { ApiExtraModels, ApiResponse, ApiResponseMetadata, getSchemaPath, ReferenceObject, SchemaObject } from "@nestjs/swagger";
 import { WithRequired } from "../utils/types.helper";
-import { ReferenceObject, SchemaObject } from "@nestjs/swagger/dist/interfaces/open-api-spec.interface";
 
 /** Entity Model as model itself or ['ModelName',Model] */
 export type TModel = Type<any> | [string,Type<any>]
