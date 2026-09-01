@@ -1,6 +1,6 @@
 {
   "name": "@maioradv/nestjs-core",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "NestJS helpers by MaiorADV",
   "repository": "https://github.com/maioradv/nestjs-core.git",
   "author": "Maior ADV Srl",
@@ -19,7 +19,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3",
     "@maioradv/accounts-lib": "^1.5.8",
-    "@maioradv/notifications-lib": "^1.2.2",
+    "@maioradv/notifications-lib": "^1.2.5",
     "@maioradv/types": "^0.0.8",
     "@nestjs/cache-manager": "^3",
     "@nestjs/common": "^11",
@@ -36,9 +36,9 @@
     "handlebars": "^4",
     "image-size": "^2",
     "nest-winston": "^1",
-    "nodemailer": "^8",
+    "nodemailer": "^9",
     "request-ip": "^3",
-    "sharp": "^0.34",
+    "sharp": "^0.35",
     "winston": "^3",
     "winston-daily-rotate-file": "^5"
   },
@@ -71,8 +71,8 @@
     "handlebars": "^4",
     "image-size": "^2",
     "nest-winston": "^1",
-    "nodemailer": "^8",
-    "sharp": "^0.34",
+    "nodemailer": "^9",
+    "sharp": "^0.35",
     "winston": "^3",
     "winston-daily-rotate-file": "^5"
   },
