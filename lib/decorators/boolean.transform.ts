@@ -1,11 +1,18 @@
 import { applyDecorators } from "@nestjs/common";
 import { Transform } from "class-transformer";
 
-export const BooleanTransform = (
+export type BooleanTransformOptions = {
+  nullPassthrough?: boolean;
+}
 
+export const BooleanTransform = (
+  options: BooleanTransformOptions = {},
 ) => {
   return applyDecorators(
     Transform(({value}:{value:string}) => {
+      if (options.nullPassthrough && value === null) {
+        return null;
+      }
       return value === 'true' ? true : 
         value === 'false' ? false : 
         value === '1' ? true :
