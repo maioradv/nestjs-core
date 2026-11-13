@@ -42,7 +42,7 @@ export class MailerService {
     subject:string,
     html:string,
     text?:string
-  }): Promise<void> {
+  }): Promise<SentMessageInfo> {
     
     return this.client.sendMail({
       from: Array.isArray(from) ? `"${from[0]}" <${from[1]}>` : from,
