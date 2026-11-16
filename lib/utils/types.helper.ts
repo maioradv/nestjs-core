@@ -6,7 +6,7 @@ export type ExtractProperties<T,H> = {
 }[keyof T];
 export type FilteredProperties<T,H> = Pick<T, ExtractProperties<T,H>>;
 export type ExtractCursors<T> = ExtractProperties<T,string | number | Date>
-export type TaskUnion<T extends Record<string,any>,O extends Record<string,unknown> = Record<string,unknown>> = {
+export type TaskUnion<T extends Record<string,any>,O = Record<string,unknown>> = {
     [K in keyof T]: {
     name: K,
     payload: T[K],
