@@ -8,6 +8,7 @@ export type inSequenceFlowOptions = {
    */
   smartPriority?:number,
   failParentOnFailure?:boolean,
+  defaultJobOptions?:DefaultJobOptions
 }
 
 /**
@@ -18,6 +19,7 @@ export function inSequenceFlow(jobs:Omit<FlowJob,'children'>[],opts:inSequenceFl
   const withOptions:FlowJob[] = jobs.map((job,index) => ({
     ...job,
     opts:{
+      ...opts.defaultJobOptions,
       ...job.opts,
       ...(opts.failParentOnFailure !== undefined && (index + 1) != jobs.length && {
         failParentOnFailure: opts.failParentOnFailure
@@ -67,8 +69,8 @@ export function flowJobsBulkMap(job:FlowJob) : FlowJob {
   return {
     ...job,
     opts:{
+      ...defaultJobOptions,
       ...job.opts,
-      ...defaultJobOptions
     }
   }
 }
