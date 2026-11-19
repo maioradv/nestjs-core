@@ -1,4 +1,4 @@
-import type { FlowOpts, FlowJob, FlowQueuesOpts } from 'bullmq'
+import type { FlowOpts, FlowJob, FlowQueuesOpts, DefaultJobOptions } from 'bullmq'
 
 export type inSequenceFlowOptions = {
   /**
@@ -42,21 +42,33 @@ export function flowQueueOptions(queueName:string,opts?:FlowQueuesOpts[string]):
   }
 }
 
+export const defaultJobOptions:DefaultJobOptions = {
+  removeOnComplete:{
+    age:3600,
+    count:100
+  },
+  removeOnFail:{
+    age:3600,
+    count:100
+  }
+}
+
 export function flowOptions(queueName:string) : FlowOpts {
   return {
     queuesOptions:{
       ...flowQueueOptions(queueName,{
-        defaultJobOptions:{
-          removeOnComplete:{
-            age:3600,
-            count:100
-          },
-          removeOnFail:{
-            age:3600,
-            count:100
-          }
-        }
+        defaultJobOptions
       })
+    }
+  }
+}
+
+export function flowJobsBulkMap(job:FlowJob) : FlowJob {
+  return {
+    ...job,
+    opts:{
+      ...job.opts,
+      ...defaultJobOptions
     }
   }
 }
