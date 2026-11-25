@@ -9,16 +9,18 @@ import {
 import * as v8 from 'v8';
 import { PerformanceObserver, constants } from 'perf_hooks';
 
-/** Qualunque logger con un metodo log() (LoggerService di Nest, ConsoleLogger, il tuo servizio...). */
+/** Any logger exposing a log() method (Nest LoggerService, ConsoleLogger, a custom service...). */
 export interface MemoryObserverLogger {
   log(message: any, ...optionalParams: any[]): any;
 }
 
 export interface MemoryObserverOptions {
-  /** Ogni quanti ms scrivere una riga. Default: 5 minuti. */
+  /** Milliseconds between log lines. Default: 5 minutes. */
   intervalMs?: number;
-  /** Se assente usa console.log. */
+  /** Falls back to console.log when omitted. */
   logger?: MemoryObserverLogger;
+  /** When false the module does nothing (no observer, no timer). Default: true. */
+  enabled?: boolean;
 }
 
 export const MEMORY_OBSERVER_OPTIONS = Symbol('MEMORY_OBSERVER_OPTIONS');
@@ -27,23 +29,26 @@ const MB = (n: number) => Math.round(n / 1048576);
 
 @Injectable()
 export class MemoryObserverService implements OnModuleInit, OnModuleDestroy {
+  private readonly enabled: boolean;
   private readonly intervalMs: number;
   private readonly logger?: MemoryObserverLogger;
   private timer?: NodeJS.Timeout;
   private observer?: PerformanceObserver;
 
-  // contatori azzerati a ogni riga di log
   private majorCount = 0;
   private majorMs = 0;
-  // ultimo valore di heapUsed misurato subito dopo un GC completo (approssimato)
+  // Heap used right after the last major GC; approximate, since the observer is notified asynchronously
   private afterMajorGC = 0;
 
   constructor(@Inject(MEMORY_OBSERVER_OPTIONS) options: MemoryObserverOptions) {
+    this.enabled = options?.enabled ?? true;
     this.intervalMs = options?.intervalMs ?? DEFAULT_INTERVAL_MS;
     this.logger = options?.logger;
   }
 
   onModuleInit() {
+    if (!this.enabled) return;
+
     this.observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries() as any[]) {
         const kind = entry.detail?.kind ?? entry.kind;
@@ -57,7 +62,7 @@ export class MemoryObserverService implements OnModuleInit, OnModuleDestroy {
     this.observer.observe({ entryTypes: ['gc'] });
 
     this.timer = setInterval(() => this.write(), this.intervalMs);
-    this.timer.unref(); // non tiene vivo il processo
+    this.timer.unref();
   }
 
   onModuleDestroy() {
@@ -92,14 +97,13 @@ export class MemoryObserverService implements OnModuleInit, OnModuleDestroy {
       if (this.logger) this.logger.log(line, 'MemoryObserver');
       else console.log(line);
     } catch {
-      // il log di diagnostica non deve mai far cadere l'app
+      // diagnostics must never crash the app
     }
   }
 }
 
 @Module({})
 export class MemoryObserverModule {
-  /** Opzioni statiche: MemoryObserverModule.forRoot() oppure forRoot({ intervalMs, logger }). */
   static forRoot(options: MemoryObserverOptions = {}): DynamicModule {
     return {
       module: MemoryObserverModule,
@@ -110,7 +114,6 @@ export class MemoryObserverModule {
     };
   }
 
-  /** Per prendere il logger dall'injection di Nest. */
   static forRootAsync(options: {
     imports?: any[];
     inject?: any[];
