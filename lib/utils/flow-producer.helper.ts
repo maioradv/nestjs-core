@@ -20,13 +20,13 @@ export function inSequenceFlow(jobs:Omit<FlowJob,'children'>[],opts:inSequenceFl
     ...job,
     opts:{
       ...opts.defaultJobOptions,
-      ...job.opts,
       ...(opts.failParentOnFailure !== undefined && (index + 1) != jobs.length && {
         failParentOnFailure: opts.failParentOnFailure
       }),
        ...(opts.smartPriority !== undefined && {
         priority: (jobs.length - (index + 1) + opts.smartPriority)
       }),
+      ...job.opts,
     }
   }))
   let child = withOptions[0];
