@@ -1,11 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsCommand, PutObjectCommand, S3Client, paginateListObjectsV2 } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectsCommand, GetObjectCommand, ListObjectsCommand, PutObjectCommand, S3Client, paginateListObjectsV2 } from "@aws-sdk/client-s3";
 import { AWSConfig } from "../config/aws.config";
 import { createHash } from "crypto";
 import { imageSize as sizeOf } from 'image-size'
 import 'multer';
 import { LoggerFactory } from "../logger";
+import path from "path";
+import { mkdir } from "fs/promises";
+import { Readable } from "stream";
+import { createWriteStream } from "fs";
+import { pipeline } from "stream/promises";
 
 export type UploadImageResponse = {
   src:string;
@@ -18,6 +23,7 @@ export type UploadImageResponse = {
 }
 
 export type S3ServiceOptions = {
+  bucket?:string,
   folder?:string,
   limit?:number
 }
@@ -41,21 +47,21 @@ export class S3Service {
 
   public async uploadImage(file: Express.Multer.File,opts:S3ServiceOptions = {}): Promise<UploadImageResponse> {
     try {
-      const FOLDER = opts.folder ?? this.sdkConfigs.folder
+      const {Bucket,Prefix} = this.getOptions(opts)
       let fileName = `${this.randomString(6)}-${file.originalname}`
       /*try {
         const check = await this.client.send(
           new HeadObjectCommand({
-            Bucket: this.sdkConfigs.bucketName, 
-            Key: `${this.sdkConfigs.folder}/${fileName}`,
+            Bucket, 
+            Key: `${Prefix}/${fileName}`,
           })
         )
         if(check) fileName = `${this.randomString(5)}-${fileName}`
       } catch(e) {}*/
       const response = await this.client.send(
         new PutObjectCommand({
-          Bucket: this.sdkConfigs.bucketName,
-          Key: `${FOLDER}/${fileName}`,
+          Bucket,
+          Key: `${Prefix}/${fileName}`,
           Body: file.buffer,
           ContentType: file.mimetype
         })
@@ -63,7 +69,7 @@ export class S3Service {
       const size = sizeOf(file.buffer)
       const checksum = createHash('md5').update(file.buffer).digest("base64");
       return {
-        src:`${this.sdkConfigs.baseUrl}/${FOLDER}/${fileName}`,
+        src:`${this.sdkConfigs.baseUrl}/${Prefix}/${fileName}`,
         width: size.width,
         height: size.height,
         checksum: checksum,
@@ -78,29 +84,31 @@ export class S3Service {
   }
 
   public async removeFile(fileName: string,opts:S3ServiceOptions = {}) {
-    const FOLDER = opts.folder ?? this.sdkConfigs.folder
+    const {Bucket,Prefix} = this.getOptions(opts)
     return this.client.send(
       new DeleteObjectCommand({
-        Bucket: this.sdkConfigs.bucketName,
-        Key: `${FOLDER}/${fileName}`,
+        Bucket,
+        Key: `${Prefix}/${fileName}`,
       })
     )
   }
 
   public async listFiles(opts:S3ServiceOptions = {}) {
+    const {Bucket,Prefix} = this.getOptions(opts)
     return this.client.send(
       new ListObjectsCommand({
-        Bucket: this.sdkConfigs.bucketName,
-        Prefix: opts.folder ?? this.sdkConfigs.folder,
+        Bucket,
+        Prefix,
         MaxKeys: opts.limit
       })
     )
   }
 
-  public async removeFiles(keys:string[]) {
+  public async removeFiles(keys:string[],opts:S3ServiceOptions = {}) {
+    const {Bucket,Prefix} = this.getOptions(opts)
     return this.client.send(
       new DeleteObjectsCommand({
-        Bucket: this.sdkConfigs.bucketName,
+        Bucket,
         Delete: {
           Objects:keys.map(k => ({
             Key:k
@@ -111,11 +119,12 @@ export class S3Service {
   }
 
   public async clearAll(opts:S3ServiceOptions = {}) {
+    const {Bucket,Prefix} = this.getOptions(opts)
     const paginator = paginateListObjectsV2(
       { client:this.client },
       {
-        Bucket: this.sdkConfigs.bucketName,
-        Prefix: opts.folder ?? this.sdkConfigs.folder,
+        Bucket,
+        Prefix,
       },
     );
 
@@ -128,7 +137,7 @@ export class S3Service {
 
     return this.client.send(
       new DeleteObjectsCommand({
-        Bucket: this.sdkConfigs.bucketName,
+        Bucket,
         Delete: {
           Objects:objectKeys
         }
@@ -144,5 +153,38 @@ export class S3Service {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+  }
+
+  async backup(destDir: string, opts:S3ServiceOptions = {}) {
+    const {Bucket,Prefix} = this.getOptions(opts)
+    const paginator = paginateListObjectsV2(
+      { client: this.client },
+      {
+        Bucket,
+        Prefix,
+      },
+    );
+
+    for await (const page of paginator) {
+      for (const obj of page.Contents ?? []) {
+        const key = obj.Key!;
+        if (key.endsWith('/')) continue;
+
+        const localPath = path.join(destDir, key.slice(Prefix.length));
+        await mkdir(path.dirname(localPath), { recursive: true });
+
+        const { Body } = await this.client.send(
+          new GetObjectCommand({ Bucket, Key: key }),
+        );
+        await pipeline(Body as Readable, createWriteStream(localPath));
+      }
+    }
+  }
+
+  private getOptions(opts:S3ServiceOptions = {}) {
+    return {
+      Bucket: opts.bucket ?? this.sdkConfigs.bucketName,
+      Prefix: opts.folder ?? this.sdkConfigs.folder
+    }
   }
 }
