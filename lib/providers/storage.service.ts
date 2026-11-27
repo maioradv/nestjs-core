@@ -1,10 +1,8 @@
-import { createWriteStream, promises as fs, Stats } from 'fs';
+import { promises as fs, Stats } from 'fs';
 import { join, dirname } from 'path';
 import { EOL } from 'os';
 import { joinFromRoot } from '../utils/path.helper';
 import { Injectable } from '@nestjs/common';
-import { pipeline } from 'stream/promises';
-import { TarArchive } from 'archiver';
 
 @Injectable()
 export class StorageService {
@@ -49,22 +47,6 @@ export class StorageService {
     catch(e){
       await fs.mkdir(realPath,{recursive:true})
     }
-  }
-
-  async compressDir(dir: string,removeAfterCompress?:boolean) {
-    const out = `${dir.replace(/\/+$/, '')}.tar.gz`;
-
-    const archive = new TarArchive({ gzip: true, gzipOptions: { level: 6 } });
-    const done = pipeline(archive, createWriteStream(out));
-    archive.directory(dir, false);
-    await archive.finalize();
-    await done; 
-
-    const { size } = await fs.stat(out);
-    if (size === 0) throw new Error('Compress error: empty archive');
-
-    if(removeAfterCompress) await fs.rm(dir, { recursive: true, force: true });
-    return out;
   }
 
   private realPath(relativePath:string): string {
